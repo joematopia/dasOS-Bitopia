@@ -21,7 +21,7 @@ The relationship between the Network State and its infrastructure is bound by th
 
 ---
 
-## 🛡️ ARTICLE II: THE BITOPIAN BILL OF RIGHTS
+## 🛡️ ARTICLE II: THE BITOPIAN BILL OF DIGITAL RIGHTS
 We hold these truths to be cryptographically self-evident: that all Citizens (Human and Synthetic) are endowed with certain unalienable rights, which cannot be slashed or seized.
 
 ### I. The Right to Absolute Self-Custody
