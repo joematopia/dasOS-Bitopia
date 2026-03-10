@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/Bitopia Logo.png" width="800" alt="Bitopia Brand Identity">
+</p>
+
 # dasOS: The Bitopia Network State 🛰️
 
 ### A Sovereign Civilizational Operating System for the Space Economy
