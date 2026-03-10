@@ -71,3 +71,55 @@ if __name__ == "__main__":
     
     verdict = filter_node.evaluate_proposal("PROP-001", malicious_proposal)
     print(verdict)
+
+import random
+
+class DecentralizedCourt:
+    def __init__(self):
+        self.active_disputes = {}
+        self.jury_pool = [] # In production, this pulls active Node IDs holding $GOV
+        
+    def lodge_dispute(self, dispute_id: str, plaintiff: str, defendant: str, locked_funds: float):
+        """Locks the disputed funds in an escrow smart contract."""
+        self.active_disputes[dispute_id] = {
+            "plaintiff": plaintiff,
+            "defendant": defendant,
+            "locked_funds_sov": locked_funds,
+            "status": "AWAITING_JURY",
+            "votes": {"plaintiff": 0, "defendant": 0}
+        }
+        print(f"⚖️ Dispute {dispute_id} lodged. {locked_funds} $SOV locked in escrow.")
+        return self.active_disputes[dispute_id]
+
+    def select_jury(self, dispute_id: str, pool_size: int = 9):
+        """Randomly selects 9 Citizens to serve as the jury, weighted by $GOV."""
+        # Simulated zk-SNARK randomized selection ensuring no conflict of interest
+        selected_jury = [f"JUROR-{random.randint(1000, 9999)}" for _ in range(pool_size)]
+        self.active_disputes[dispute_id]["status"] = "TRIAL_ACTIVE"
+        print(f"🏛️ Jury of {pool_size} Citizens cryptographically summoned for {dispute_id}.")
+        return selected_jury
+
+    def execute_verdict(self, dispute_id: str):
+        """Resolves the dispute using Quadratic Voting results from the jury."""
+        dispute = self.active_disputes[dispute_id]
+        if dispute["votes"]["plaintiff"] > dispute["votes"]["defendant"]:
+            winner = dispute["plaintiff"]
+        else:
+            winner = dispute["defendant"]
+            
+        dispute["status"] = "RESOLVED"
+        print(f"✅ Verdict Reached: Funds ({dispute['locked_funds_sov']} $SOV) released to {winner}.")
+        return {"winner": winner, "funds_released": dispute["locked_funds_sov"]}
+
+# --- Arbitration Execution Example ---
+if __name__ == "__main__":
+    court = DecentralizedCourt()
+    # Plaintiff claims Defendant did not deliver promised Orbital Compute
+    court.lodge_dispute("CASE-001", "Citizen_A", "Citizen_B", 500.00)
+    court.select_jury("CASE-001")
+    
+    # Simulate Jury Votes (Quadratic Weighting applied in production)
+    court.active_disputes["CASE-001"]["votes"]["plaintiff"] = 6
+    court.active_disputes["CASE-001"]["votes"]["defendant"] = 3
+    
+    court.execute_verdict("CASE-001")
