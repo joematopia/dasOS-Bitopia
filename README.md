@@ -13,7 +13,7 @@ By initializing the **dasOS** kernel and syncing with the network, every Node en
 
 ---
 
-## 🇺🇸 ARTICLE I: THE NODE COVENANT (The Contract)
+## 🌐 ARTICLE I: THE NODE COVENANT (The Contract)
 The relationship between the Network State and its infrastructure is bound by the following unalterable laws of consensus:
 1. **Unbiased Validation:** No Node shall censor, delay, or arbitrarily alter the transaction of any Citizen. 
 2. **Proof of Constitution:** All smart contracts and governance proposals must pass the local `compliance_filter.py` against the Network Dream Protocol before being propagated.
@@ -54,4 +54,4 @@ Bitopia claims zero terrestrial borders. Its jurisdiction is the Space Economy. 
 ## ✍️ RATIFICATION
 This Codex is ratified the moment a Node connects to the genesis block. 
 
-*“Life, Liberty, and the Pursuit of On-Chain Prosperity.”*
+*“Life, Liberty, and the Pursuit of Happiness & On-Chain Prosperity.”*
