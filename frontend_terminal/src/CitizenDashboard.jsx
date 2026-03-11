@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from 'react';
 
-// Reusable Glassmorphism Wrapper for ultra-clean UI
-const GlassCard = ({ children, className = "" }) => (
-  <div className={`bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl transition-all hover:border-[#00F0FF]/30 ${className}`}>
+// Reusable Glass Card with hover-glow for interactive feel
+const GlassCard = ({ children, className = "", noHover = false }) => (
+  <div className={`bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl ${noHover ? '' : 'transition-all duration-300 hover:border-[#00F0FF]/40 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)]'} ${className}`}>
     {children}
   </div>
 );
 
 const CitizenDashboard = () => {
   const [isConnected, setIsConnected] = useState(false);
-  const [citizenId, setCitizenId] = useState('');
-  
-  // Simulated Live Telemetry Data
+  const [networkPulse, setNetworkPulse] = useState({ blocks: 14209, globalWatts: 8400.5 });
   const [pings, setPings] = useState({ meo: 12, uae: 45, slv: 28 });
 
-  // Simulate network breathing/fluctuating pings
+  // Simulate the "Beating Artery" of the network
   useEffect(() => {
     if (!isConnected) return;
     const interval = setInterval(() => {
@@ -23,127 +21,152 @@ const CitizenDashboard = () => {
         uae: Math.floor(Math.random() * (50 - 40 + 1) + 40),
         slv: Math.floor(Math.random() * (35 - 25 + 1) + 25),
       });
-    }, 3000);
+      // Simulate blocks being forged by the Swarm
+      setNetworkPulse(prev => ({
+        blocks: prev.blocks + (Math.random() > 0.7 ? 1 : 0),
+        globalWatts: prev.globalWatts + (Math.random() * 0.5)
+      }));
+    }, 2500);
     return () => clearInterval(interval);
   }, [isConnected]);
 
-  const connectWallet = () => {
-    setIsConnected(true);
-    setCitizenId('Sovereign ID: zk-SNARK Verified');
-  };
-
   return (
-    <div className="min-h-screen bg-[#0d0e12] text-gray-200 font-sans relative overflow-hidden flex flex-col justify-between">
+    <div className="min-h-screen bg-[#0A0A0C] text-gray-200 font-sans relative overflow-hidden flex flex-col justify-between">
       
-      {/* Ambient Starlight Background Glow */}
-      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#00F0FF] opacity-[0.03] blur-[120px] rounded-full pointer-events-none"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] bg-blue-600 opacity-[0.02] blur-[100px] rounded-full pointer-events-none"></div>
-
-      {/* Main Container */}
-      <div className="max-w-7xl mx-auto w-full p-8 z-10 flex-grow">
+      {/* Deep Space Background Glow */}
+      <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-[#00F0FF] opacity-[0.02] blur-[150px] rounded-full pointer-events-none"></div>
+      
+      <div className="max-w-7xl mx-auto w-full p-6 lg:p-10 z-10 flex-grow flex flex-col gap-8">
         
-        {/* Header */}
-        <header className="flex justify-between items-center mb-12">
-          <div className="flex items-center gap-4">
-            {/* Minimalist Logo Representation */}
-            <div className="w-10 h-10 rounded-full border border-[#00F0FF] flex items-center justify-center shadow-[0_0_15px_rgba(0,240,255,0.2)]">
-              <div className="w-4 h-4 bg-[#00F0FF] rounded-full animate-pulse"></div>
+        {/* TOP NAV: Identity & Connection */}
+        <header className="flex justify-between items-center">
+          <div className="flex items-center gap-4 group cursor-pointer">
+            <div className="w-12 h-12 rounded-full border-2 border-[#00F0FF]/30 flex items-center justify-center group-hover:border-[#00F0FF] transition-colors shadow-[0_0_20px_rgba(0,240,255,0.15)] relative">
+              <div className="w-5 h-5 bg-[#00F0FF] rounded-full animate-pulse"></div>
             </div>
             <div>
-              <h1 className="text-2xl font-semibold tracking-widest text-white">BITOPIA</h1>
-              <p className="text-xs text-[#00F0FF]/70 tracking-widest uppercase">The Digital Soul of a New Era</p>
+              <h1 className="text-3xl font-bold tracking-widest text-white">BITOPIA</h1>
+              <p className="text-xs text-[#00F0FF] tracking-widest uppercase opacity-80">MEO Network State</p>
             </div>
           </div>
           
           {!isConnected ? (
-            <button 
-              onClick={connectWallet}
-              className="px-6 py-2 rounded-full border border-[#00F0FF]/50 text-[#00F0FF] hover:bg-[#00F0FF]/10 hover:shadow-[0_0_20px_rgba(0,240,255,0.3)] transition-all duration-300 font-medium tracking-wide">
-              Initialize Connection
+            <button onClick={() => setIsConnected(true)} className="px-8 py-3 rounded-full bg-[#00F0FF]/10 border border-[#00F0FF]/50 text-[#00F0FF] hover:bg-[#00F0FF]/20 hover:shadow-[0_0_25px_rgba(0,240,255,0.4)] transition-all duration-300 font-bold tracking-wide">
+              Connect Identity
             </button>
           ) : (
-            <div className="text-right flex items-center gap-3 bg-white/5 px-4 py-2 rounded-full border border-white/10">
-              <span className="w-2 h-2 rounded-full bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.8)]"></span>
-              <p className="font-mono text-xs text-gray-300">{citizenId}</p>
+            <div className="flex items-center gap-4 bg-white/5 pr-6 pl-2 py-2 rounded-full border border-white/10">
+              <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Bitopia" alt="Avatar" className="w-10 h-10 rounded-full bg-black/50" />
+              <div>
+                <p className="font-mono text-sm text-white font-semibold">zk-ID: 0x8F...3A1</p>
+                <p className="text-[10px] text-purple-400 uppercase tracking-widest">Civic Rank: Architect</p>
+              </div>
             </div>
           )}
         </header>
 
-        {/* Dashboard Content */}
         {isConnected && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in-up">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fade-in-up">
             
-            {/* SOV Treasury Card */}
-            <GlassCard>
-              <h2 className="text-sm uppercase tracking-wider text-gray-400 mb-1">Liquid Treasury</h2>
-              <div className="flex items-baseline gap-2 mb-6">
-                <span className="text-4xl font-light text-white">$1,450.</span>
-                <span className="text-xl text-gray-500 font-mono">50</span>
-                <span className="text-xs text-[#00F0FF] ml-2">SOV</span>
-              </div>
-              <div className="flex gap-2">
-                <button className="flex-1 bg-white/10 hover:bg-white/20 py-2 rounded-lg text-sm transition-colors border border-white/5">Send</button>
-                <button className="flex-1 bg-white/10 hover:bg-white/20 py-2 rounded-lg text-sm transition-colors border border-white/5">Receive</button>
-              </div>
-            </GlassCard>
+            {/* LEFT COLUMN: The Tri-Token Economy (Personal) */}
+            <div className="lg:col-span-4 flex flex-col gap-4">
+              <h3 className="text-xs uppercase tracking-widest text-gray-500 font-semibold mb-2">Personal Treasury</h3>
+              
+              <GlassCard className="flex justify-between items-center group">
+                <div>
+                  <p className="text-xs text-gray-400 mb-1">Liquid Capital ($SOV)</p>
+                  <p className="text-2xl font-light text-white">$1,450.<span className="text-sm text-gray-500">50</span></p>
+                </div>
+                <button className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-[#00F0FF]/20 group-hover:text-[#00F0FF] transition-all">+</button>
+              </GlassCard>
 
-            {/* GOV Influence Card */}
-            <GlassCard>
-              <h2 className="text-sm uppercase tracking-wider text-gray-400 mb-1">Network Influence</h2>
-              <div className="flex items-baseline gap-2 mb-6">
-                <span className="text-4xl font-light text-white">42</span>
-                <span className="text-xs text-purple-400 ml-2">GOV</span>
-              </div>
-              <div className="w-full bg-black/40 h-2 rounded-full mb-2 overflow-hidden border border-white/5">
-                <div className="bg-purple-500 w-[42%] h-full shadow-[0_0_10px_rgba(168,85,247,0.8)]"></div>
-              </div>
-              <p className="text-xs text-gray-500 font-mono">Voting Weight: √42 = 6.48</p>
-            </GlassCard>
+              <GlassCard className="flex justify-between items-center group">
+                <div>
+                  <p className="text-xs text-gray-400 mb-1">Civic Influence ($GOV)</p>
+                  <p className="text-2xl font-light text-white">42 <span className="text-xs text-purple-400 tracking-widest">WEIGHT: 6.48</span></p>
+                </div>
+                <button className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-purple-500/20 group-hover:text-purple-400 transition-all">⚖️</button>
+              </GlassCard>
 
-            {/* E-Watt Physics Card */}
-            <GlassCard>
-              <h2 className="text-sm uppercase tracking-wider text-gray-400 mb-1">Thermodynamic Utility</h2>
-              <div className="flex items-baseline gap-2 mb-6">
-                <span className="text-4xl font-light text-white">310.2</span>
-                <span className="text-xs text-yellow-400 ml-2">E-WATT</span>
-              </div>
-              <button className="w-full bg-[#00F0FF]/10 hover:bg-[#00F0FF]/20 text-[#00F0FF] border border-[#00F0FF]/30 py-2 rounded-lg text-sm transition-colors shadow-[0_0_10px_rgba(0,240,255,0.1)]">
-                Allocate Orbital Compute
-              </button>
-            </GlassCard>
+              <GlassCard className="flex justify-between items-center group">
+                <div>
+                  <p className="text-xs text-gray-400 mb-1">Orbital Physics (E-Watt)</p>
+                  <p className="text-2xl font-light text-white">310.2 <span className="text-xs text-yellow-400 tracking-widest">READY</span></p>
+                </div>
+                <button className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-yellow-500/20 group-hover:text-yellow-400 transition-all">⚡</button>
+              </GlassCard>
+            </div>
 
+            {/* RIGHT COLUMN: The Beating Artery & Directives */}
+            <div className="lg:col-span-8 flex flex-col gap-6">
+              
+              {/* The Network Pulse */}
+              <GlassCard noHover className="bg-gradient-to-br from-white/5 to-[#00F0FF]/5 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-[#00F0FF]/10 blur-[80px] rounded-full"></div>
+                <h3 className="text-xs uppercase tracking-widest text-[#00F0FF] font-semibold mb-6 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#00F0FF] animate-ping"></span> Global Network Pulse
+                </h3>
+                
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div>
+                    <p className="text-xs text-gray-400">Blocks Forged</p>
+                    <p className="text-2xl font-mono text-white">{networkPulse.blocks.toLocaleString()}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400">Global Swarm Output</p>
+                    <p className="text-2xl font-mono text-yellow-400">{(networkPulse.globalWatts / 1000).toFixed(2)} kW</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400">Active Citizens</p>
+                    <p className="text-2xl font-mono text-white">2,841</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400">Treasury Backing</p>
+                    <p className="text-2xl font-mono text-green-400">184.2 BTC</p>
+                  </div>
+                </div>
+              </GlassCard>
+
+              {/* Actionable Directives (Gamification/Utility) */}
+              <div>
+                <h3 className="text-xs uppercase tracking-widest text-gray-500 font-semibold mb-4">Active Directives</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  
+                  <div className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/10 transition-colors cursor-pointer flex flex-col justify-between">
+                    <div>
+                      <span className="text-[10px] bg-purple-500/20 text-purple-300 px-2 py-1 rounded text-xs tracking-wide">VOTE REQUIRED</span>
+                      <h4 className="text-white font-medium mt-2">Ratify Orbital Slot Claim #84</h4>
+                      <p className="text-xs text-gray-400 mt-1">Requires 75% Quadratic Supermajority.</p>
+                    </div>
+                    <button className="mt-4 text-xs font-bold text-[#00F0FF] text-left hover:text-white transition-colors">CAST VOTE →</button>
+                  </div>
+
+                  <div className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/10 transition-colors cursor-pointer flex flex-col justify-between">
+                    <div>
+                      <span className="text-[10px] bg-yellow-500/20 text-yellow-300 px-2 py-1 rounded text-xs tracking-wide">COMPUTE DEMAND</span>
+                      <h4 className="text-white font-medium mt-2">Render AI Payload for Terrestrial Node</h4>
+                      <p className="text-xs text-gray-400 mt-1">Bounty: +2.5 $SOV per E-Watt allocated.</p>
+                    </div>
+                    <button className="mt-4 text-xs font-bold text-yellow-400 text-left hover:text-white transition-colors">ALLOCATE E-WATTS →</button>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
           </div>
         )}
       </div>
 
-      {/* The Telemetry Bar (Bottom HUD) */}
-      <div className="w-full border-t border-white/10 bg-black/60 backdrop-blur-2xl py-3 px-8 flex justify-between items-center z-20">
-        <div className="flex gap-8">
-          <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#00F0FF] animate-pulse"></span>
-            <span className="text-xs font-mono text-gray-400">MEO Swarm: <span className="text-white">{pings.meo}ms</span></span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-            <span className="text-xs font-mono text-gray-400">UAE Legal Node: <span className="text-white">{pings.uae}ms</span></span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-            <span className="text-xs font-mono text-gray-400">Volcanic Energy Node: <span className="text-white">{pings.slv}ms</span></span>
-          </div>
+      {/* The Telemetry Bar (Simplified & Cleaner) */}
+      <div className="w-full border-t border-white/5 bg-black/80 backdrop-blur-md py-2 px-8 flex justify-between items-center text-[10px] font-mono tracking-widest text-gray-500 uppercase z-20">
+        <div className="flex gap-6">
+          <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 bg-[#00F0FF] rounded-full"></span> MEO Swarm [{pings.meo}ms]</span>
+          <span className="flex items-center gap-2 hidden sm:flex"><span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span> El Salvador [{pings.slv}ms]</span>
+          <span className="flex items-center gap-2 hidden md:flex"><span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span> UAE Node [{pings.uae}ms]</span>
         </div>
-        
-        <div className="flex items-center gap-4">
-          <button className="text-xs font-mono text-gray-500 hover:text-[#00F0FF] transition-colors uppercase tracking-widest">
-            Protocol Logs
-          </button>
-          <span className="text-gray-700">|</span>
-          <button className="text-xs font-mono text-gray-500 hover:text-[#00F0FF] transition-colors uppercase tracking-widest">
-            Global Settings
-          </button>
-        </div>
+        <div>L1: RUST_PQC_ENGINE_ACTIVE</div>
       </div>
-
     </div>
   );
 };
