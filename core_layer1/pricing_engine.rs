@@ -1,55 +1,81 @@
-//! Bitopia: E-Watt Dynamic Pricing Engine
-//! Logic: Thermodynamic Arbitrage (Solar Exposure, Congestion, & Thermal Limits)
+//! Bitopia Layer 1: Thermodynamic Pricing & Burn Engine (v2.0)
+//! Logic: N-Dimensional E-Watt pricing, Exponential Thermal Penalties, and Deflationary Burn
 
-pub struct OrbitalNode {
-    pub solar_exposure: f64, // 0.0 (Eclipse) to 1.0 (Direct Sun)
-    pub battery_level: f64,  // 0.0 to 100.0%
-    pub active_jobs: u32,    // Current AI payloads being processed
-    pub thermal_load: f64,   // 0.0 to 100.0% (GPU heat saturation)
+pub struct ComputeRequest {
+    pub client_zk_id: String,
+    pub base_compute_watts: f64, // W_c
+    pub local_thermal_load: f64, // T(x,t) in percentage (0.0 to 1.0)
 }
 
-impl OrbitalNode {
-    /// Calculates the current price of 1 E-Watt in $SOV
-    pub fn calculate_price(&self) -> Result<f64, &'static str> {
-        // HARD STOP: Hardware Protection Protocol
-        if self.thermal_load > 95.0 {
-            return Err("🚫 NODE LOCKOUT: Critical thermal saturation. Radiators require cooldown.");
-        }
+pub struct PaymentDistribution {
+    pub total_sov_cost: f64,
+    pub burned_sov: f64,
+    pub hardware_fee_sov: f64,
+}
 
-        let mut price = 1.0; // Base $SOV price per E-Watt
+pub struct PricingEngine {
+    pub e_watt_usd_peg: f64,       // Base parameter: $0.05
+    pub oracle_sov_usd_price: f64, // Phi(t): Current price of $SOV in USD (e.g., $1.25)
+    
+    // Tensor Constants
+    pub alpha: f64, // Compute baseline weight
+    pub beta: f64,  // Thermal penalty multiplier
+    pub gamma: f64, // Exponential severity constant
+}
+
+impl PricingEngine {
+    /// Calculates C_SOV(t) using the exponential thermodynamic manifold
+    pub fn calculate_compute_cost(&self, req: &ComputeRequest) -> f64 {
+        // Base physical cost of the compute
+        let base_cost = self.alpha * req.base_compute_watts;
         
-        // 1. Scarcity Multiplier: If in eclipse, price triples to protect battery
-        if self.solar_exposure < 0.2 { price *= 3.0; }
+        // Exponential thermal penalty: e^(gamma * T(x,t))
+        let thermal_exponent = self.gamma * req.local_thermal_load;
+        let thermal_penalty = self.beta * thermal_exponent.exp();
         
-        // 2. Congestion Multiplier: Price increases as more companies bid
-        price *= 1.0 + (self.active_jobs as f64 * 0.1);
+        // Total cost in USD (E-Watts pegged)
+        let total_usd_cost = (base_cost + thermal_penalty) * self.e_watt_usd_peg;
         
-        // 3. Thermal Premium: As heat rises above 75%, price scales exponentially
-        if self.thermal_load > 75.0 {
-            let thermal_penalty = (self.thermal_load - 75.0) * 0.2; // +20% price per degree over 75
-            price *= 1.0 + thermal_penalty;
-            println!("⚠️ THERMAL PREMIUM ACTIVE: Radiator capacity approaching limits.");
+        // Convert to $SOV using the real-time Oracle price
+        total_usd_cost / self.oracle_sov_usd_price
+    }
+
+    /// Executes the Deflationary Supply Calculus (80% Burn / 20% Hardware)
+    pub fn process_payment(&self, req: ComputeRequest) -> PaymentDistribution {
+        let total_sov = self.calculate_compute_cost(&req);
+        
+        // The Burn Equilibrium
+        let burned = total_sov * 0.80; // Destroyed forever
+        let hardware_fee = total_sov * 0.20; // Paid to Bitaris/Node Operator
+
+        println!("⚡ E-WATT ALLOCATION: Processing {} base watts for {}.", req.base_compute_watts, req.client_zk_id);
+        println!("🔥 DEFLATIONARY BURN: {:.2} $SOV permanently removed from circulation.", burned);
+        println!("🛰️ HARDWARE YIELD: {:.2} $SOV routed to Bitaris.", hardware_fee);
+
+        PaymentDistribution {
+            total_sov_cost: total_sov,
+            burned_sov: burned,
+            hardware_fee_sov: hardware_fee,
         }
-        
-        Ok(price)
     }
 }
 
 fn main() {
-    // SCENARIO 1: Prime Condition
-    let node_prime = OrbitalNode { solar_exposure: 1.0, battery_level: 98.0, active_jobs: 1, thermal_load: 45.0 };
-    
-    // SCENARIO 2: Node running too hot
-    let node_hot = OrbitalNode { solar_exposure: 1.0, battery_level: 90.0, active_jobs: 4, thermal_load: 85.0 };
+    let engine = PricingEngine {
+        e_watt_usd_peg: 0.05,
+        oracle_sov_usd_price: 1.25, // Assuming $SOV is currently trading at $1.25
+        alpha: 1.0,
+        beta: 2.5,
+        gamma: 4.0, 
+    };
 
-    println!("--- MEO Swarm Pricing Telemetry ---");
-    match node_prime.calculate_price() {
-        Ok(p) => println!("🟢 Node Alpha (Nominal): {:.2} $SOV / E-Watt", p),
-        Err(e) => println!("{}", e),
-    }
+    // Scenario: AI company requesting 10,000 watts. The satellite is running hot (85% thermal load).
+    let req = ComputeRequest {
+        client_zk_id: String::from("0xAI_CORP_OMEGA"),
+        base_compute_watts: 10000.0,
+        local_thermal_load: 0.85, 
+    };
 
-    match node_hot.calculate_price() {
-        Ok(p) => println!("🟠 Node Beta (Running Hot): {:.2} $SOV / E-Watt", p),
-        Err(e) => println!("{}", e),
-    }
+    let result = engine.process_payment(req);
+    println!("✅ TRANSACTION COMPLETE: Total Cost: {:.2} $SOV", result.total_sov_cost);
 }
