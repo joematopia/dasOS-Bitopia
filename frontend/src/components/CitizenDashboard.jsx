@@ -1,81 +1,103 @@
-import React, { useState } from 'react';
-import StakingTerminal from './StakingTerminal';
+import React, { useState, useEffect } from 'react';
 
-export default function CitizenDashboard() {
-  const [accessGranted, setAccessGranted] = useState(false);
-  const [passkey, setPasskey] = useState("");
+const CitizenDashboard = () => {
+  const [logs, setLogs] = useState([
+    "INITIATING dasOS BOOT SEQUENCE...",
+    "ZK-PROOF VERIFIED. CLEARANCE LEVEL: 1",
+    "UPLINK TO AXIOM SWARM ESTABLISHED."
+  ]);
+  const [eWatts, setEWatts] = useState(12450.75);
 
-  // 🛡️ THE AIRLOCK: Prevents rendering classified UI until authorized
-  if (!accessGranted) {
-    return (
-      <div className="bg-black min-h-screen flex items-center justify-center font-mono p-4">
-        <div className="w-full max-w-md border border-green-900 p-8 rounded bg-gray-900 shadow-[0_0_30px_rgba(0,255,0,0.1)]">
-          <h1 className="text-green-500 text-xl mb-6 tracking-widest text-center uppercase">Bitopia // Secure Uplink</h1>
-          <p className="text-gray-500 text-xs mb-4 text-center">UNAUTHORIZED ACCESS IS PROHIBITED</p>
-          <input 
-            type="password" 
-            placeholder="ENTER PASSKEY" 
-            value={passkey}
-            className="w-full bg-black border border-green-800 text-green-500 p-3 mb-4 text-center outline-none focus:border-green-400"
-            onChange={(e) => setPasskey(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && (passkey === "BITOPIA_2026" ? setAccessGranted(true) : alert("INVALID CREDENTIALS"))}
-          />
-          <button 
-            onClick={() => passkey === "BITOPIA_2026" ? setAccessGranted(true) : alert("INVALID CREDENTIALS")}
-            className="w-full bg-green-900/20 border border-green-500 text-green-500 py-3 uppercase tracking-tighter hover:bg-green-500 hover:text-black transition-all"
-          >
-            Authenticate
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // Simulating the live Swarm Mesh and E-Watt generation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setEWatts(prev => +(prev + 0.12).toFixed(2));
+      
+      const newLogs = [
+        `[TELEMETRY] Axiom Node 001 Ping. Status: ACTIVE`,
+        `[FORGE] Mining Block with Hardware ZK-Seal...`,
+        `[MESH] Merkle Root Updated: 0x${Math.random().toString(16).substr(2, 8).toUpperCase()}`,
+        `[ORACLE] Terrestrial Solar Farm verified. Minting +0.12 $E-WATT`
+      ];
+      const randomLog = newLogs[Math.floor(Math.random() * newLogs.length)];
+      
+      setLogs(prev => [...prev.slice(-6), randomLog]); // Keep last 7 logs
+    }, 3500);
+    return () => clearInterval(interval);
+  }, []);
 
-  // 🛰️ THE ACTUAL DASHBOARD (Only visible after BITOPIA_2026 is entered)
   return (
-    <div className="bg-black text-green-400 min-h-screen p-8 font-mono">
-      <header className="mb-8 border-b border-green-800 pb-4 flex justify-between items-center">
+    <div className="min-h-screen bg-gray-950 text-emerald-400 font-mono p-6 tracking-wide">
+      {/* HEADER */}
+      <header className="border-b-2 border-emerald-500/30 pb-4 mb-8 flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-bold tracking-widest uppercase">Bitopia // Citizen Terminal</h1>
-          <p className="text-sm text-gray-500 uppercase mt-2">dasOS Core Layer 1 - Live Swarm Telemetry</p>
+          <h1 className="text-3xl font-bold tracking-widest text-emerald-300">dasOS // BITOPTIA</h1>
+          <p className="text-sm text-emerald-600">SOVEREIGN SPACE HABITAT // V.1.0.0</p>
         </div>
-        <button onClick={() => setAccessGranted(false)} className="text-xs border border-red-900 text-red-900 px-2 py-1 hover:bg-red-900 hover:text-white">DISCONNECT</button>
+        <div className="text-right">
+          <p className="animate-pulse text-emerald-500">🟢 NETWORK: ONLINE</p>
+          <p className="text-xs text-emerald-700">LATENCY: 14ms (ORBITAL MESH)</p>
+        </div>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        {/* PANEL 1: Swarm Telemetry */}
-        <div className="border border-green-700 p-4 rounded bg-gray-900 shadow-[0_0_15px_rgba(0,255,0,0.1)]">
-          <h2 className="text-xl mb-4 border-b border-green-900 pb-2 uppercase">🛰️ Swarm Status</h2>
-          <ul className="space-y-2">
-            <li className="flex justify-between"><span>Active Nodes:</span> <span className="text-white">142</span></li>
-            <li className="flex justify-between"><span>Solar Efficiency:</span> <span className="text-white">92%</span></li>
-            <li className="flex justify-between"><span>Avg Thermal Load:</span> <span className="text-white">68%</span></li>
-          </ul>
+      {/* MAIN GRID */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        {/* PANEL 1: CITIZEN IDENTITY */}
+        <div className="bg-black/50 border border-emerald-500/20 p-5 rounded-sm shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+          <h2 className="text-lg font-bold border-b border-emerald-500/20 mb-3 pb-1">CITIZEN PROFILE</h2>
+          <div className="space-y-2 text-sm">
+            <p><span className="text-emerald-600">ZK-HASH:</span> 0x8F9A...3B2C</p>
+            <p><span className="text-emerald-600">SECTOR:</span> AXIOM_RING_A</p>
+            <p><span className="text-emerald-600">CLEARANCE:</span> LEVEL 1</p>
+            <p><span className="text-emerald-600">STATUS:</span> <span className="text-emerald-300">VERIFIED</span></p>
+          </div>
         </div>
 
-        {/* PANEL 2: Economic Engine */}
-        <div className="border border-green-700 p-4 rounded bg-gray-900 shadow-[0_0_15px_rgba(0,255,0,0.1)]">
-          <h2 className="text-xl mb-4 border-b border-green-900 pb-2 uppercase">⚡ Economic Engine</h2>
-          <ul className="space-y-2">
-            <li className="flex justify-between"><span>E-Watt Spot:</span> <span className="text-yellow-400">1.25 $SOV</span></li>
-            <li className="flex justify-between"><span>Sovereign Vault:</span> <span className="text-yellow-400">5000 $SOV</span></li>
-          </ul>
+        {/* PANEL 2: TREASURY & ASSETS */}
+        <div className="bg-black/50 border border-emerald-500/20 p-5 rounded-sm shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+          <h2 className="text-lg font-bold border-b border-emerald-500/20 mb-3 pb-1">SOVEREIGN VAULT</h2>
+          <div className="space-y-4">
+            <div>
+              <p className="text-xs text-emerald-600">GOVERNANCE STAKE</p>
+              <p className="text-2xl text-emerald-300">100,000.00 <span className="text-sm text-emerald-600">$SOV</span></p>
+            </div>
+            <div>
+              <p className="text-xs text-emerald-600">PHYSICAL ENERGY BACKING</p>
+              <p className="text-2xl text-yellow-400">{eWatts} <span className="text-sm text-yellow-600">$E-WATT</span></p>
+            </div>
+          </div>
         </div>
 
-        {/* PANEL 3: Jurisdiction */}
-        <div className="border border-green-700 p-4 rounded bg-gray-900 shadow-[0_0_15px_rgba(0,255,0,0.1)]">
-          <h2 className="text-xl mb-4 border-b border-green-900 pb-2 uppercase">🏛️ Jurisdiction</h2>
-          <ul className="space-y-2">
-            <li className="flex justify-between"><span>Registered DAOs:</span> <span className="text-white">47</span></li>
-            <li className="flex justify-between"><span>RWA Minted:</span> <span className="text-white">1,200,000</span></li>
-          </ul>
+        {/* PANEL 3: PHYSICAL INFRASTRUCTURE (DePIN) */}
+        <div className="bg-black/50 border border-emerald-500/20 p-5 rounded-sm shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+          <h2 className="text-lg font-bold border-b border-emerald-500/20 mb-3 pb-1">DER TELEMETRY</h2>
+          <div className="space-y-3 text-sm">
+            <div className="flex justify-between items-center border-b border-emerald-900 pb-1">
+              <span>TERRESTRIAL SOLAR 01</span>
+              <span className="text-emerald-300">ACTIVE</span>
+            </div>
+            <p><span className="text-emerald-600">HW-ID:</span> AXIOM_HW_774</p>
+            <p><span className="text-emerald-600">CAPACITY:</span> 15.0 kW/h</p>
+            <p><span className="text-emerald-600">ENCLAVE SEAL:</span> VALID 🛡️</p>
+          </div>
         </div>
-      </div>
 
-      <div className="border-t border-green-900 pt-8">
-        <h2 className="text-center text-2xl font-bold tracking-widest text-gray-500 mb-4 uppercase text-sm">// Uplink: Sovereign Treasury //</h2>
-        <StakingTerminal />
+        {/* PANEL 4: THE NERVOUS SYSTEM (TERMINAL) */}
+        <div className="md:col-span-3 bg-black border border-emerald-500/30 p-4 rounded-sm relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.25)_50%)] bg-[length:100%_4px] pointer-events-none z-10"></div>
+          <h2 className="text-sm font-bold text-emerald-600 mb-2">LIVE SWARM MESH UPLINK</h2>
+          <div className="h-40 overflow-y-auto font-mono text-xs text-emerald-400 space-y-1 relative z-20">
+            {logs.map((log, i) => (
+              <p key={i}>{'>'} {log}</p>
+            ))}
+            <p className="animate-pulse">{'>'} _</p>
+          </div>
+        </div>
+
       </div>
     </div>
   );
-}
+};
+
+export default CitizenDashboard;
