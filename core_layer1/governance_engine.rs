@@ -7,10 +7,10 @@ type BlockHash = String;    // Represents a Quantum-safe SHA-3 / Keccak-512 hash
 // 2. The Zero-Knowledge Bitopian Citizen
 #[derive(Debug, Clone)]
 pub struct BitopianCitizen {
-    pub zkp_identity_hash: String, // Proof they are "Free World" without revealing identity
-    pub risk_clearance: u8,        // 0-100 score proved via ZK-circuits
+    pub zkp_identity_hash: String, 
+    pub risk_clearance: u8,        
     pub staked_sov: f64,
-    pub habitat_sector: String,    // Physical or simulated space sector assignment
+    pub habitat_sector: String,    
 }
 
 // 3. The Tamper-Resistant Block (The Distributed Network)
@@ -19,8 +19,8 @@ pub struct Block {
     pub block_height: u64,
     pub timestamp: u64,
     pub previous_hash: BlockHash,
-    pub state_shard_id: u32,       // Distributes the database across the satellite swarm
-    pub transactions: Vec<String>, // Encrypted state changes
+    pub state_shard_id: u32,       
+    pub transactions: Vec<String>, 
     pub validator_signature: PQSignature, // Quantum-proof seal
 }
 
@@ -30,7 +30,7 @@ pub struct SovereignHabitat {
     pub current_block: u64,
     pub ledger_chain: Vec<Block>,
     pub citizens: HashMap<String, BitopianCitizen>,
-    pub thermal_capacity_mw: f64,  // Habitat life-support metric
+    pub thermal_capacity_mw: f64,  
 }
 
 impl SovereignHabitat {
@@ -53,7 +53,7 @@ impl SovereignHabitat {
         }
     }
 
-    // The Immigration Airlock: Validating a ZK-Proof before granting citizenship
+    // The Immigration Airlock
     pub fn onboard_citizen(&mut self, zkp_payload: &str) -> Result<String, String> {
         let is_valid_free_world_citizen = self.verify_zk_proof(zkp_payload);
         
@@ -74,4 +74,32 @@ impl SovereignHabitat {
     fn verify_zk_proof(&self, _payload: &str) -> bool {
         true // Placeholder for actual ZK-circuit validation
     }
-}
+
+    // ==========================================
+    // 🚀 THE FORGE: MINE_BLOCK() HAS ARRIVED
+    // ==========================================
+    pub fn mine_block(&mut self, pending_transactions: Vec<String>) -> Block {
+        // 1. Look at the last block to get its hash
+        let previous_block = self.ledger_chain.last().unwrap();
+        let new_previous_hash = format!("HASH_OF_BLOCK_{}", previous_block.block_height);
+        
+        // 2. Generate the Quantum-Resistant Seal (Mocked as hex bytes)
+        let pq_seal = vec![0x0F, 0x1A, 0x2B, 0x3C]; 
+
+        // 3. Build the new block
+        let new_block = Block {
+            block_height: previous_block.block_height + 1,
+            timestamp: 1710200000, // Standard UNIX time
+            previous_hash: new_previous_hash,
+            state_shard_id: 1, // Sharded to Sector 1
+            transactions: pending_transactions,
+            validator_signature: pq_seal,
+        };
+        
+        // 4. Lock it into the chain permanently
+        self.ledger_chain.push(new_block.clone());
+        self.current_block = new_block.block_height;
+        
+        new_block
+    }
+}W
