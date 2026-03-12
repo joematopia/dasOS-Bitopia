@@ -109,13 +109,12 @@ impl SovereignHabitat {
         }
 
         // 2. ENCLAVE VERIFICATION: Did the hardware actually burn the E-Watts?
-        // (In reality, this would cryptographically verify the hardware_zk_proof string)
         if hardware_zk_proof != "VALID_ENCLAVE_SIGNATURE" {
              return Err("51% ATTACK DETECTED: Energy signature invalid. Forging rejected.".to_string());
         }
 
         // 3. The node is legit. Update its lifetime energy burn.
-        node.lifetime_e_watts += 14.2; // Arbitrary E-Watt cost for this block
+        node.lifetime_e_watts += 14.2; 
 
         // 4. Build and lock the block
         let previous_block = self.ledger_chain.last().unwrap();
@@ -129,7 +128,7 @@ impl SovereignHabitat {
             state_shard_id: 1, 
             transactions: pending_transactions,
             validator_signature: pq_seal,
-            hardware_zk_proof: hardware_zk_proof.to_string(), // Etched into history
+            hardware_zk_proof: hardware_zk_proof.to_string(), 
         };
         
         self.ledger_chain.push(new_block.clone());
@@ -138,35 +137,3 @@ impl SovereignHabitat {
         Ok(new_block)
     }
 }
-    fn verify_zk_proof(&self, _payload: &str) -> bool {
-        true // Placeholder for actual ZK-circuit validation
-    }
-
-    // ==========================================
-    // 🚀 THE FORGE: MINE_BLOCK() HAS ARRIVED
-    // ==========================================
-    pub fn mine_block(&mut self, pending_transactions: Vec<String>) -> Block {
-        // 1. Look at the last block to get its hash
-        let previous_block = self.ledger_chain.last().unwrap();
-        let new_previous_hash = format!("HASH_OF_BLOCK_{}", previous_block.block_height);
-        
-        // 2. Generate the Quantum-Resistant Seal (Mocked as hex bytes)
-        let pq_seal = vec![0x0F, 0x1A, 0x2B, 0x3C]; 
-
-        // 3. Build the new block
-        let new_block = Block {
-            block_height: previous_block.block_height + 1,
-            timestamp: 1710200000, // Standard UNIX time
-            previous_hash: new_previous_hash,
-            state_shard_id: 1, // Sharded to Sector 1
-            transactions: pending_transactions,
-            validator_signature: pq_seal,
-        };
-        
-        // 4. Lock it into the chain permanently
-        self.ledger_chain.push(new_block.clone());
-        self.current_block = new_block.block_height;
-        
-        new_block
-    }
-}W
