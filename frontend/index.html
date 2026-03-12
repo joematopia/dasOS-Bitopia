@@ -1,16 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bitopia // Citizen Terminal</title>
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitopia // Citizen Terminal v3.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-      body { background-color: black; }
+        body { background-color: #050505; color: #4ade80; font-family: 'JetBrains Mono', monospace; overflow-x: hidden; }
+        .glow-box { box-shadow: 0 0 20px rgba(74, 222, 128, 0.05); transition: all 0.3s ease; }
+        .glow-box:hover { box-shadow: 0 0 30px rgba(74, 222, 128, 0.15); border-color: #4ade80; }
+        /* Dimensional Pulse Animation */
+        @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 0.7; } 100% { opacity: 0.3; } }
+        .uplink-dot { animation: pulse 2s infinite; }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        function App() {
+            const [access, setAccess] = useState(false);
+            const [pass, setPass] = useState("");
+            const [efficiency, setEfficiency] = useState(92.4);
+
+            // Simulate the "Beyond 3 Dimensions" jitter of live data
+            useEffect(() => {
+                if (access) {
+                    const interval = setInterval(() => {
+                        setEfficiency(prev => (prev + (Math.random() * 0.4 - 0.2)).toFixed(2));
+                    }, 3000);
+                    return () => clearInterval(interval);
+                }
+            }, [access]);
+
+            if (!access) {
+                return (
+                    <div className="min-h-screen flex items-center justify-center p-4">
+                        <div className="w-full max-w-md border border-green-900 p-8 rounded bg-gray-950 glow-box">
+                            <h1 className="text-green-500 text-xl mb-6 tracking-widest text-center uppercase">Bitopia // Secure Uplink</h1>
+                            <input type="password" placeholder="ENTER PASSKEY" className="w-full bg-black border border-green-800 text-green-500 p-3 mb-4 text-center outline-none focus:border-green-400" onChange={(e) => setPass(e.target.value)} />
+                            <button onClick={() => pass === "BITOPIA_2026" ? setAccess(true) : alert("DENIED")} className="w-full bg-green-950 border border-green-500 text-green-500 py-3 uppercase hover:bg-green-500 hover:text-black transition-all">Authenticate</button>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="p-8 max-w-6xl mx-auto">
+                    <header className="mb-12 border-b border-green-900/50 pb-6 flex justify-between items-end">
+                        <div>
+                            <div className="flex items-center gap-2 mb-1">
+                                <span className="w-2 h-2 bg-green-500 rounded-full uplink-dot"></span>
+                                <span className="text-[10px] text-green-700 tracking-[0.3em] uppercase">Uplink: Axiom-4 Swarm</span>
+                            </div>
+                            <h1 className="text-4xl font-black tracking-tighter uppercase italic text-white">Bitopia <span className="text-green-500">//</span> Terminal</h1>
+                        </div>
+                        <button onClick={() => setAccess(false)} className="text-red-900 border border-red-900 px-4 py-1 text-[10px] hover:bg-red-900 hover:text-white transition-all uppercase tracking-widest">Terminate Session</button>
+                    </header>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                        <div className="border border-green-900 p-6 bg-gray-950/50 glow-box relative overflow-hidden">
+                            <div className="absolute top-0 right-0 p-2 text-[8px] text-green-900">TLM_01</div>
+                            <h2 className="text-xs text-gray-500 mb-4 uppercase tracking-[0.2em]">🛰️ Swarm Telemetry</h2>
+                            <div className="flex justify-between items-end"><span className="text-sm">Active Nodes</span><span className="text-2xl text-white">142</span></div>
+                            <div className="flex justify-between items-end mt-2"><span className="text-sm">Efficiency</span><span className="text-2xl text-white">{efficiency}%</span></div>
+                        </div>
+
+                        <div className="border border-green-900 p-6 bg-gray-950/50 glow-box relative">
+                            <div className="absolute top-0 right-0 p-2 text-[8px] text-green-900">ECON_TRX</div>
+                            <h2 className="text-xs text-gray-500 mb-4 uppercase tracking-[0.2em]">⚡ Thermodynamic Parity</h2>
+                            <div className="flex justify-between items-end"><span className="text-sm">Unit: E-Watt</span><span className="text-2xl text-yellow-500">Fixed</span></div>
+                            <div className="flex justify-between items-end mt-2"><span className="text-sm">SOV Burn Rate</span><span className="text-2xl text-white">0.80 <span className="text-xs">/ unit</span></span></div>
+                        </div>
+
+                        <div className="border border-green-900 p-6 bg-gray-950/50 glow-box relative">
+                            <div className="absolute top-0 right-0 p-2 text-[8px] text-green-900">REG_AUTH</div>
+                            <h2 className="text-xs text-gray-500 mb-4 uppercase tracking-[0.2em]">🏛️ Jurisdiction</h2>
+                            <div className="flex justify-between items-end"><span className="text-sm">DAOs</span><span className="text-2xl text-white">47</span></div>
+                            <div className="flex justify-between items-end mt-2"><span className="text-sm">BTC Reserve</span><span className="text-2xl text-orange-500">12.4k</span></div>
+                        </div>
+                    </div>
+
+                    <div className="border border-gray-800 bg-gray-950 p-12 rounded-lg text-center relative">
+                         <div className="text-xs text-gray-600 mb-8 tracking-[0.5em] uppercase italic">Sovereign Treasury Staking Interface</div>
+                         <div className="text-5xl font-bold text-white mb-2">14.2% <span className="text-green-500 text-sm italic font-normal">Est. APY (Paid in BTC)</span></div>
+                         <input type="range" className="w-full h-1 bg-gray-900 rounded-full appearance-none cursor-pointer accent-green-500 mb-8" />
+                         <button className="px-12 py-4 bg-transparent border border-green-500 text-green-500 uppercase tracking-[0.3em] text-xs hover:bg-green-500 hover:text-black transition-all">Engage Protocol</button>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
 </html>
