@@ -3,353 +3,407 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>dasOS | Bitopia Sovereign Network</title>
+    <title>dasOS // The Fabric of Bitopia</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@100;400;700&display=swap');
 
         :root {
-            --axiom-cyan: #00F0FF;
-            --space-dark: #050505;
-            --glass-bg: rgba(10, 10, 15, 0.4);
+            --bg-deep: #02040A; 
+            --glass-bg: rgba(6, 11, 20, 0.5);
             --glass-border: rgba(0, 240, 255, 0.15);
+            --cyan: #00F0FF; --gold: #D4AF37; --purple: #A855F7; --btc: #F7931A;
         }
 
-        body {
-            font-family: 'Space Grotesk', sans-serif;
-            background-color: var(--space-dark);
-            color: white;
-            overflow: hidden; /* Lock the viewport */
-            margin: 0;
-            padding: 0;
+        body { 
+            margin: 0; overflow: hidden; height: 100vh; background-color: var(--bg-deep);
+            font-family: 'Inter', sans-serif; color: #E2E8F0; user-select: none; perspective: 2000px;
         }
 
-        /* The Glassmorphism standard */
-        .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--glass-border);
+        /* --- 1. THE LIVING BACKGROUND --- */
+        .void-bg { position: absolute; inset: 0; z-index: -10; background: radial-gradient(circle at 50% 50%, #061122, var(--bg-deep)); }
+        
+        .parallax-wrapper {
+            position: absolute; inset: -5%; display: flex; align-items: center; justify-content: center;
+            transform-style: preserve-3d; transition: transform 0.1s ease-out; z-index: 0;
         }
 
-        .glass-modal {
-            background: rgba(5, 5, 8, 0.75);
-            backdrop-filter: blur(24px);
-            border: 1px solid rgba(0, 240, 255, 0.3);
-            box-shadow: 0 0 40px rgba(0, 240, 255, 0.1);
+        /* --- 2. BITOPIA (THE PLANET) --- */
+        .bitopia-planet {
+            position: absolute; width: 220px; height: 220px; border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, rgba(0, 240, 255, 0.15), rgba(0,0,0,0.95));
+            box-shadow: 0 0 80px rgba(0, 240, 255, 0.1), inset 0 0 40px rgba(0, 240, 255, 0.2);
+            border: 1px solid rgba(0,240,255,0.05); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex; align-items: center; justify-content: center; overflow: hidden; transform-style: preserve-3d;
         }
 
-        /* 3D Parallax Environment */
-        .parallax-container {
-            perspective: 1200px;
-            height: 100vh;
-            width: 100vw;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transform-style: preserve-3d;
-        }
-
-        /* Fractal Cluster Design (Blocks within Blocks) */
-        .cluster-block {
-            position: absolute;
-            width: 80px;
-            height: 80px;
-            background-color: rgba(5, 10, 20, 0.8);
-            border: 1px solid rgba(0, 240, 255, 0.4);
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2), inset 0 0 20px rgba(0, 240, 255, 0.1);
-            transform-style: preserve-3d;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
-            /* The Micro-Grid Illusion */
+        .planet-grid {
+            position: absolute; inset: 0; border-radius: 50%; opacity: 0;
             background-image: 
-                linear-gradient(to right, rgba(0, 240, 255, 0.15) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(0, 240, 255, 0.15) 1px, transparent 1px);
-            background-size: 8px 8px; /* Creates 100 visible sub-sectors per face */
+                linear-gradient(rgba(0, 240, 255, 0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.3) 1px, transparent 1px);
+            background-size: 20px 20px; background-position: center;
+            transform: scale(1.1); transition: all 1s ease; mask-image: radial-gradient(circle at center, black 40%, transparent 70%); -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 70%);
+        }
+        
+        .forge-mode .bitopia-planet { box-shadow: 0 0 100px rgba(0, 240, 255, 0.4), inset 0 0 60px rgba(0, 240, 255, 0.6); background: rgba(0,0,0,0.9); }
+        .forge-mode .planet-grid { opacity: 1; transform: scale(1) rotateX(20deg); animation: grid-spin 20s linear infinite; cursor: crosshair; pointer-events: auto; }
+        @keyframes grid-spin { 100% { background-position: 20px 20px; } }
+
+        /* --- 3. THE CRYPTOGRAPHIC RING --- */
+        .dyson-ring-framework {
+            position: absolute; width: 700px; height: 700px; border-radius: 50%;
+            border: 1px solid rgba(0, 240, 255, 0.2); transform-style: preserve-3d;
+            box-shadow: 0 0 40px rgba(0,240,255,0.05), inset 0 0 40px rgba(0,240,255,0.05);
+            animation: ring-spin 180s linear infinite;
+        }
+        @keyframes ring-spin { 0% { transform: rotateX(75deg) rotateZ(0deg); } 100% { transform: rotateX(75deg) rotateZ(360deg); } }
+
+        /* DECOUPLED BLOCK MATHEMATICS */
+        .block-orbit-position {
+            position: absolute; top: 50%; left: 50%; transform-style: preserve-3d; pointer-events: none;
         }
 
-        .cluster-block:hover {
-            border-color: var(--axiom-cyan);
-            box-shadow: 0 0 30px rgba(0, 240, 255, 0.6), inset 0 0 30px rgba(0, 240, 255, 0.3);
-            z-index: 100;
+        /* The Data Uplinks (Raining from Cosmos) - Perfectly parallel now */
+        .cryptographic-uplink {
+            position: absolute; left: 0; top: 0; width: 2px; height: 200px;
+            background: linear-gradient(to top, var(--cyan), transparent);
+            transform-origin: bottom center;
+            /* Pointing straight up on the Z axis, hitting the top of the block perfectly */
+            transform: translate(-50%, -100%) rotateX(-90deg) translateZ(14px); 
+            opacity: 0.15; transition: all 0.4s ease; pointer-events: none;
+        }
+        .block-interactive.hovered ~ .cryptographic-uplink {
+            opacity: 1; height: 350px; box-shadow: 0 0 20px var(--cyan);
         }
 
-        /* The Data Uplink Beam */
-        .uplink-beam {
-            position: absolute;
-            top: -1000px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 2px;
-            height: 1000px;
-            background: linear-gradient(to bottom, transparent, rgba(0, 240, 255, 0.8));
-            opacity: 0;
-            transition: opacity 0.3s ease;
+        .block-local-rotation {
+            position: absolute; top: 0; left: 0; transform-style: preserve-3d;
         }
 
-        .cluster-block:hover .uplink-beam {
-            opacity: 1;
+        .block-interactive {
+            position: absolute; top: -20px; left: -20px; width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center;
+            transform-style: preserve-3d; cursor: pointer; pointer-events: auto; z-index: 10;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .block-interactive.hovered { z-index: 100; transform: scale(1.8) translateZ(10px); }
+
+        .cube-3d { width: 28px; height: 28px; transform-style: preserve-3d; transform: rotateX(-90deg) rotateY(0deg) rotateZ(45deg); }
+        .block-interactive.hovered .cube-3d { filter: drop-shadow(0 0 20px var(--cyan)); }
+        
+        .cube-face { position: absolute; width: 28px; height: 28px; border: 1px solid rgba(0,240,255,0.4); box-shadow: inset 0 0 12px rgba(0,0,0,0.8); }
+        .face-top { transform: rotateX(90deg) translateZ(14px); background: linear-gradient(135deg, rgba(0,240,255,0.8), rgba(0,240,255,0.2)); }
+        .face-front { transform: translateZ(14px); background: linear-gradient(180deg, rgba(0,180,255,0.8), rgba(0,100,200,0.2)); }
+        .face-right { transform: rotateY(90deg) translateZ(14px); background: linear-gradient(180deg, rgba(0,150,255,0.8), rgba(0,50,150,0.2)); }
+
+        .gold-top { transform: rotateX(90deg) translateZ(14px); background: linear-gradient(135deg, #FDE047, rgba(212,175,55,0.4)); border-color: rgba(212,175,55,0.6); }
+        .gold-front { transform: translateZ(14px); background: linear-gradient(180deg, #D4AF37, rgba(161,98,7,0.4)); border-color: rgba(212,175,55,0.6); }
+        .gold-right { transform: rotateY(90deg) translateZ(14px); background: linear-gradient(180deg, #A16207, rgba(113,63,18,0.4)); border-color: rgba(212,175,55,0.6); }
+
+        /* --- 4. UNIFIED OS GLASS UI --- */
+        .dasos-glass {
+            background: rgba(4, 8, 16, 0.5); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border); box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
 
-        /* Orbit Animation */
-        @keyframes orbit {
-            0% { transform: rotateY(0deg); }
-            100% { transform: rotateY(360deg); }
-        }
+        .dasos-topbar { position: fixed; top: 24px; left: 50%; transform: translateX(-50%); border-radius: 20px; padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; width: 80%; max-width: 1200px; z-index: 70; }
+        .dasos-dock { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); border-radius: 24px; padding: 10px 16px; display: flex; gap: 20px; z-index: 70; }
+        
+        .dock-icon { width: 48px; height: 48px; border-radius: 12px; border: 1px solid rgba(0,240,255,0.1); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.7); transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; position: relative; background: rgba(0,0,0,0.2); }
+        .dock-icon svg { width: 24px; height: 24px; }
+        .dock-icon:hover { transform: scale(1.3) translateY(-10px); margin: 0 8px; border-color: var(--cyan); color: var(--cyan); background: rgba(0, 240, 255, 0.2); box-shadow: 0 10px 25px rgba(0,240,255,0.2); z-index: 80;}
+        .dock-icon.active { border-color: var(--cyan); color: var(--cyan); background: rgba(0,240,255,0.1); }
+        .dock-icon.active::after { content: ''; position: absolute; bottom: -8px; width: 20px; height: 3px; background: var(--cyan); border-radius: 2px; box-shadow: 0 0 10px var(--cyan); }
 
-        .megastructure-ring {
-            position: absolute;
-            transform-style: preserve-3d;
-            animation: orbit 120s linear infinite;
-        }
+        .widget-panel-left { position: fixed; top: 90px; left: 24px; width: 320px; display: flex; flex-direction: column; gap: 16px; z-index: 45; pointer-events: none; }
+        .widget-panel-right { position: fixed; top: 90px; right: 24px; width: 260px; display: flex; flex-direction: column; gap: 16px; z-index: 45; pointer-events: none; }
+        .widget { border-radius: 16px; padding: 16px; pointer-events: auto; }
 
-        /* MacOS-style Bottom Dock */
-        .dock {
-            position: fixed;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 16px;
-            padding: 12px 24px;
-            background: rgba(10, 10, 15, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 32px;
-            z-index: 50;
-        }
+        .dasos-window { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.95); width: 900px; height: 580px; border-radius: 16px; display: flex; flex-direction: column; z-index: 60; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); background: rgba(6, 11, 20, 0.85); }
+        .dasos-window.open { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
 
-        .dock-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
+        .window-titlebar { height: 48px; border-bottom: 1px solid var(--glass-border); display: flex; align-items: center; padding: 0 20px; background: rgba(0,0,0,0.4); justify-content: space-between; border-radius: 16px 16px 0 0; }
+        .window-title { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--cyan); letter-spacing: 0.1em; text-transform: uppercase; font-weight: bold; }
+        .window-controls { display: flex; gap: 12px; }
+        .win-btn { width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: rgba(255,255,255,0.4); font-family: 'JetBrains Mono'; font-size: 12px; }
+        .win-btn:hover { color: var(--cyan); }
+        
+        .window-content { flex: 1; display: flex; overflow: hidden; border-radius: 0 0 16px 16px; }
+        .sidebar { width: 220px; background: rgba(0,0,0,0.3); border-right: 1px solid var(--glass-border); padding: 20px; display: flex; flex-direction: column; gap: 8px; }
+        .sidebar-item { padding: 10px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; transition: all 0.2s; color: #94A3B8; }
+        .sidebar-item:hover, .sidebar-item.active { background: rgba(0,240,255,0.1); color: #fff; box-shadow: inset 2px 0 0 var(--cyan); }
+        
+        .main-view { flex: 1; padding: 32px; overflow-y: auto; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .scroll-custom::-webkit-scrollbar { width: 4px; }
+        .scroll-custom::-webkit-scrollbar-thumb { background: rgba(0, 240, 255, 0.3); border-radius: 4px; }
 
-        .dock-icon:hover {
-            transform: scale(1.2) translateY(-10px);
-            background: rgba(0, 240, 255, 0.1);
-            border-color: var(--axiom-cyan);
-        }
+        @keyframes beam-up { 0% { height: 0; opacity: 1; } 100% { height: 350px; opacity: 0; } }
+        .action-beam { position: absolute; bottom: 0; left: 50%; width: 4px; background: var(--cyan); transform: translateX(-50%); box-shadow: 0 0 20px var(--cyan); pointer-events: none; z-index: 60; }
 
-        /* Pulse Animation for Live Data */
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        .node-inspector-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px);
+            display: flex; align-items: center; justify-content: center; z-index: 100;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
         }
-        .live-dot {
-            width: 6px;
-            height: 6px;
-            background-color: var(--axiom-cyan);
-            border-radius: 50%;
-            display: inline-block;
-            box-shadow: 0 0 8px var(--axiom-cyan);
-            animation: pulse 2s infinite;
-        }
+        .node-inspector-overlay.active { opacity: 1; pointer-events: auto; }
     </style>
 </head>
 <body>
+    <div id="root"></div>
 
-    <canvas id="starfield" class="fixed inset-0 z-[-1] pointer-events-none"></canvas>
-
-    <nav class="fixed top-0 w-full glass-panel z-50 flex justify-between items-center px-6 py-3 text-xs tracking-widest uppercase">
-        <div class="flex items-center gap-6">
-            <div class="font-bold text-white text-sm tracking-widest flex items-center gap-2">
-                <div class="w-4 h-4 rounded-full border border-[#00F0FF] flex items-center justify-center">
-                    <div class="w-1.5 h-1.5 bg-[#00F0FF] rounded-full"></div>
-                </div>
-                dasOS
-            </div>
-            <div class="text-gray-400 border-l border-gray-700 pl-6 flex items-center gap-2">
-                <span class="live-dot"></span> Bitopia Mainnet
-            </div>
-        </div>
-
-        <div class="flex gap-8 text-gray-300">
-            <div class="flex flex-col">
-                <span class="text-[10px] text-gray-500">Global Hashrate</span>
-                <span id="live-hashrate" class="text-[#00F0FF] font-mono">1.42 EH/s</span>
-            </div>
-            <div class="flex flex-col">
-                <span class="text-[10px] text-gray-500">Active Micro-Nodes</span>
-                <span id="live-nodes" class="font-mono">1,048,576</span>
-            </div>
-            <div class="flex flex-col">
-                <span class="text-[10px] text-gray-500">$SOV Parity</span>
-                <span class="font-mono">$1.00 USD</span>
-            </div>
-            <div class="flex flex-col text-right">
-                <span class="text-[10px] text-gray-500">Space-Time Epoch</span>
-                <span id="epoch-clock" class="font-mono text-white">0000.00.00</span>
-            </div>
-        </div>
-    </nav>
-
-    <main class="parallax-container" id="universe">
-        <div class="megastructure-ring" id="ring-1">
-            </div>
-    </main>
-
-    <div id="inspector-modal" class="fixed inset-0 z-[100] flex items-center justify-center hidden bg-black/60 backdrop-blur-sm transition-opacity">
-        <div class="glass-modal w-[450px] p-6 rounded-2xl relative">
-            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">✕</button>
+    <script type="text/babel">
+        function App() {
+            const [activeApp, setActiveApp] = React.useState(null); 
+            const [sidebarTab, setSidebarTab] = React.useState('overview');
+            const [mousePos, setMousePos] = React.useState({ x: 0, y: 0 });
             
-            <div class="flex items-center gap-3 mb-6">
-                <div class="w-12 h-12 bg-[#00F0FF]/10 border border-[#00F0FF]/30 rounded flex items-center justify-center">
-                    <svg class="w-6 h-6 text-[#00F0FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                </div>
-                <div>
-                    <h2 class="text-xl font-bold tracking-wide" id="modal-cluster-id">Cluster Sector Alpha</h2>
-                    <p class="text-xs text-[#00F0FF] uppercase tracking-widest font-mono">Status: Optimal Convergence</p>
-                </div>
-            </div>
+            const [hoveredBlockId, setHoveredBlockId] = React.useState(null);
+            const [selectedBlock, setSelectedBlock] = React.useState(null); 
 
-            <div class="space-y-4">
-                <div class="bg-white/5 border border-white/10 p-3 rounded-lg flex justify-between items-center">
-                    <span class="text-xs text-gray-400 uppercase">Micro-Cubes Contained</span>
-                    <span class="font-mono text-white" id="modal-micro-cubes">1,024,000</span>
-                </div>
-                
-                <div class="bg-white/5 border border-white/10 p-3 rounded-lg">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs text-gray-400 uppercase">Compute Load</span>
-                        <span class="font-mono text-[#00F0FF]" id="modal-load">84.2%</span>
+            // MACRO-ECONOMY
+            const [eWatts, setEWatts] = React.useState(38450.50); 
+            const [sov, setSov] = React.useState(18450.00); 
+            const [gov, setGov] = React.useState(850); 
+            const [btc, setBtc] = React.useState(24.505); 
+            const [epoch, setEpoch] = React.useState(1042);
+            
+            // DATA
+            const [blocks, setBlocks] = React.useState(Array.from({length: 12}, (_, i) => ({ 
+                id: i, angle: i * 30, radius: 350, type: i % 4 === 0 ? 'rwa' : 'core' 
+            })));
+            const [telemetry, setTelemetry] = React.useState(["[SYS] Bitopia Core Synchronized."]);
+            const [actionBeam, setActionBeam] = React.useState(false);
+
+            // ENGINE LOOP
+            React.useEffect(() => {
+                const handleMouseMove = (e) => {
+                    const x = (e.clientX / window.innerWidth) * 2 - 1;
+                    const y = (e.clientY / window.innerHeight) * 2 - 1;
+                    setMousePos({ x, y });
+                };
+                window.addEventListener('mousemove', handleMouseMove);
+
+                const interval = setInterval(() => {
+                    setEWatts(p => +(p + 4.5).toFixed(2));
+                    setEpoch(p => p + 1);
+                    if(Math.random() > 0.7) setTelemetry(prev => [...prev.slice(-6), `[EPOCH ${epoch}] Hashrate nominal. Orbit stable.`]);
+                }, 2000);
+
+                return () => {
+                    window.removeEventListener('mousemove', handleMouseMove);
+                    clearInterval(interval);
+                };
+            }, [epoch]);
+
+            const triggerBeam = () => {
+                setActionBeam(true);
+                setTimeout(() => setActionBeam(false), 800);
+            };
+
+            const forgeBlock = () => {
+                if(eWatts < 1500) return;
+                triggerBeam();
+                setEWatts(p => p - 1500);
+                const newAngle = blocks.length * 15;
+                setBlocks(p => [...p, { id: p.length + 1, angle: newAngle, radius: 350, type: 'core' }]);
+                setTelemetry(prev => [...prev.slice(-6), `[FORGE] Physical matter synthesized on Ledger.`]);
+            };
+
+            const handleBlockClick = (block) => {
+                setSelectedBlock(block);
+                setTelemetry(prev => [...prev.slice(-6), `[SYS] Inspecting Node Hash #${block.id.toString().padStart(4, '0')}`]);
+            };
+
+            // SVGs
+            const IconIdentity = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>;
+            const IconBank = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg>;
+            const IconSenate = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 21h18M4 21V7M20 21V7M7 21v-4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v4M12 7v10M12 3v4"></path></svg>;
+            const IconForge = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"></path></svg>;
+
+            const renderAppContent = () => {
+                if (activeApp === 'forge') return (
+                    <div className="flex h-full">
+                        <div className="sidebar">
+                            <div className="text-[10px] text-cyan-400 font-mono mb-4 px-2 tracking-widest">CIVILIZATION</div>
+                            <div className="sidebar-item active">Orbital Forge</div>
+                        </div>
+                        <div className="main-view scroll-custom relative">
+                            <h2 className="text-2xl font-bold mb-2">Bitopia Digital Twin</h2>
+                            <p className="text-sm text-gray-400 mb-6">Click directly on the Planet Grid to claim spatial sectors, or forge physical blocks onto the orbital Megastructure.</p>
+                            
+                            <div className="bg-black/40 border border-white/10 rounded-xl p-6">
+                                <div className="flex items-center justify-between mb-4">
+                                    <h3 className="font-bold text-white">Synthesize Matter</h3>
+                                    <span className="text-[10px] bg-cyan-900/40 text-cyan-400 px-2 py-1 rounded font-mono">Cost: 1,500 EW</span>
+                                </div>
+                                <p className="text-xs text-gray-400 mb-6 leading-relaxed">Burns E-WATT to construct a new structural node on the Dyson ring. This node will weave into the cryptographic fabric and increase total network yield.</p>
+                                <button onClick={forgeBlock} className="w-full bg-cyan-600/20 hover:bg-cyan-500/40 border border-cyan-500 text-cyan-300 py-3 rounded-lg text-sm font-bold transition-all shadow-[0_0_15px_rgba(0,240,255,0.2)]">
+                                    Execute Forge Sequence
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="w-full bg-black rounded-full h-1.5">
-                        <div class="bg-[#00F0FF] h-1.5 rounded-full" style="width: 84.2%"></div>
+                );
+                return <div className="p-8 text-center text-gray-400 font-mono mt-20">SYSTEM DATA ROUTING...<br/><br/>(Explore the Forge to see the Digital Twin interaction)</div>;
+            };
+
+            const openApp = (app) => { setActiveApp(app === activeApp ? null : app); };
+
+            const parallaxStyle = { transform: `rotateX(${mousePos.y * -8}deg) rotateY(${mousePos.x * 8}deg) translateZ(50px)` };
+
+            return (
+                <div className={`h-screen w-full relative ${activeApp === 'forge' ? 'forge-mode' : ''}`}>
+                    
+                    <div className="void-bg"></div>
+                    
+                    {/* PARALLAX 3D UNIVERSE */}
+                    <div className="parallax-wrapper" style={parallaxStyle}>
+                        
+                        <div className="bitopia-planet">
+                            <div className="planet-grid" onClick={() => { if(activeApp==='forge') setTelemetry(prev => [...prev.slice(-6), `[REGISTRY] Planetary Sector Claimed.`]); }}></div>
+                        </div>
+                        
+                        <div className="dyson-ring-framework">
+                            {blocks.map(b => {
+                                const rad = (b.angle * Math.PI) / 180;
+                                const x = Math.cos(rad) * b.radius; 
+                                const y = Math.sin(rad) * b.radius;
+                                
+                                return (
+                                    <div key={`pos-${b.id}`} className="block-orbit-position" style={{ transform: `translate(-50%, -50%) translate3d(${x}px, ${y}px, 0)` }}>
+                                        
+                                        {/* Local Rotation wrapper keeps the cube facing the right way */}
+                                        <div className="block-local-rotation" style={{ transform: `rotateZ(${-b.angle}deg)` }}>
+                                            <div 
+                                                className={`block-interactive ${hoveredBlockId === b.id ? 'hovered' : ''}`}
+                                                onMouseEnter={() => setHoveredBlockId(b.id)} onMouseLeave={() => setHoveredBlockId(null)}
+                                                onClick={() => handleBlockClick(b)}
+                                            >
+                                                <div className="cube-3d">
+                                                    <div className={`cube-face ${b.type === 'rwa' ? 'gold-top' : 'face-top'}`}></div>
+                                                    <div className={`cube-face ${b.type === 'rwa' ? 'gold-front' : 'face-front'}`}></div>
+                                                    <div className={`cube-face ${b.type === 'rwa' ? 'gold-right' : 'face-right'}`}></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* The Axiom Uplink Beam (Outside local rotation so it always shoots straight UP) */}
+                                        <div className={`cryptographic-uplink ${hoveredBlockId === b.id ? 'active' : ''}`}></div>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
+
+                    {/* TOP UNIFIED PILL BAR */}
+                    <div className="dasos-glass dasos-topbar">
+                        <div className="flex items-center gap-6">
+                            <div className="flex items-center gap-2">
+                                <svg width="24" height="24" viewBox="0 0 100 100"><ellipse cx="50" cy="65" rx="40" ry="12" fill="none" stroke="#fff" strokeWidth="4" transform="rotate(-15 50 65)"/><ellipse cx="50" cy="65" rx="35" ry="10" fill="none" stroke="#4DEEEA" strokeWidth="4" transform="rotate(15 50 65)"/></svg>
+                                <span className="font-bold text-white tracking-widest text-sm">BLOCKS</span>
+                            </div>
+                            <span className="text-gray-500 border-l border-white/10 pl-6 text-xs">{activeApp ? activeApp : 'DESKTOP'}</span>
+                        </div>
+                        <div className="flex items-center gap-8 text-gray-400 font-mono text-xs">
+                            <span className="text-cyan-400 flex flex-col items-end"><span className="text-[8px] text-gray-500">KINETIC FUEL</span>{eWatts.toLocaleString('en-US', {minimumFractionDigits: 2})} EW</span>
+                            <span className="text-green-400 flex flex-col items-end"><span className="text-[8px] text-gray-500">STABLE RESERVE</span>{sov.toLocaleString('en-US', {minimumFractionDigits: 2})} SOV</span>
+                            <span className="text-purple-400 flex flex-col items-end"><span className="text-[8px] text-gray-500">VOTING POWER</span>{gov.toFixed(0)} GOV</span>
+                            <div className="h-6 w-px bg-white/10"></div>
+                            <div className="flex items-center gap-2 text-white"><div className="w-2 h-2 bg-emerald-400 rounded-full shadow-[0_0_8px_#10B981]"></div> ONLINE</div>
+                        </div>
+                    </div>
+
+                    {/* LEFT WIDGET PANEL (Live Telemetry) */}
+                    <div className="widget-panel-left">
+                        <div className="dasos-glass widget flex flex-col h-64">
+                            <p className="text-[10px] text-gray-500 font-mono uppercase tracking-widest mb-3 border-b border-white/10 pb-2">Live Telemetry</p>
+                            <div className="flex-1 overflow-y-auto scroll-hide font-mono text-[10px] space-y-3 flex flex-col-reverse">
+                                {telemetry.slice().reverse().map((log, i) => (
+                                    <div key={i} className="text-gray-300 leading-snug border-l-2 border-cyan-500/50 pl-3">{log}</div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* RIGHT WIDGET PANEL (Space-Time Epoch) */}
+                    <div className="widget-panel-right">
+                        <div className="dasos-glass widget">
+                            <p className="text-[10px] text-gray-500 font-mono uppercase tracking-widest mb-3 border-b border-white/10 pb-2">Space-Time Epoch</p>
+                            <h3 className="text-3xl font-bold text-white font-mono">{epoch.toString().padStart(6, '0')}</h3>
+                            <p className="text-xs text-emerald-400 font-mono mt-2">Block Height Synced</p>
+                        </div>
+                    </div>
+
+                    {/* DYNAMIC ACTION BEAM */}
+                    {actionBeam && <div className="action-beam" style={{ animation: 'beam-up 0.8s ease-out forwards' }}></div>}
+
+                    {/* OS WINDOW */}
+                    <div className={`dasos-glass dasos-window ${activeApp ? 'open' : ''}`}>
+                        <div className="window-titlebar">
+                            <div className="window-title">dasOS // {activeApp}</div>
+                            <div className="window-controls">
+                                <div className="win-btn" onClick={() => setActiveApp(null)}>_</div>
+                                <div className="win-btn">□</div>
+                                <div className="win-btn" onClick={() => setActiveApp(null)}>✕</div>
+                            </div>
+                        </div>
+                        <div className="window-content">
+                            {activeApp && renderAppContent()}
+                        </div>
+                    </div>
+
+                    {/* BOTTOM DOCK */}
+                    <div className="dasos-glass dasos-dock">
+                        <div className={`dock-icon ${activeApp === 'identity' ? 'active' : ''}`} onClick={() => openApp('identity')} title="Sovereign Identity"><IconIdentity /></div>
+                        <div className="w-px h-6 bg-white/10 self-center mx-1"></div>
+                        <div className={`dock-icon ${activeApp === 'treasury' ? 'active' : ''}`} onClick={() => openApp('treasury')} title="Central Bank"><IconBank /></div>
+                        <div className={`dock-icon ${activeApp === 'senate' ? 'active' : ''}`} onClick={() => openApp('senate')} title="Planetary Senate"><IconSenate /></div>
+                        <div className={`dock-icon ${activeApp === 'forge' ? 'active' : ''}`} onClick={() => openApp('forge')} title="Civ Forge"><IconForge /></div>
+                    </div>
+
+                    {/* NODE INSPECTOR MODAL */}
+                    <div className={`node-inspector-overlay ${selectedBlock ? 'active' : ''}`} onClick={() => setSelectedBlock(null)}>
+                        {selectedBlock && (
+                            <div className="dasos-glass p-8 rounded-2xl w-80 pointer-events-auto border-t-2 border-cyan-500 relative" onClick={e => e.stopPropagation()}>
+                                <button className="absolute top-5 right-5 text-gray-500 hover:text-white" onClick={() => setSelectedBlock(null)}>✕</button>
+                                <p className="text-[10px] text-cyan-400 font-mono uppercase tracking-widest mb-1">Cryptographic Node</p>
+                                <h2 className="text-2xl font-bold text-white mb-6 font-mono">Block #{selectedBlock.id.toString().padStart(4, '0')}</h2>
+                                
+                                <div className="space-y-4">
+                                    <div className="bg-black/40 border border-white/10 p-4 rounded-xl">
+                                        <p className="text-[9px] text-gray-500 uppercase tracking-widest">Node Architecture</p>
+                                        <p className={`text-sm font-bold mt-1 uppercase ${selectedBlock.type === 'rwa' ? 'text-[#D4AF37]' : 'text-cyan-400'}`}>
+                                            {selectedBlock.type === 'rwa' ? 'Corporate RWA Anchor' : 'Bitopia Habitat Core'}
+                                        </p>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="bg-black/40 border border-white/10 p-4 rounded-xl">
+                                            <p className="text-[9px] text-gray-500 uppercase tracking-widest">Orbital Vector</p>
+                                            <p className="text-sm text-white font-mono mt-1">{selectedBlock.angle}°</p>
+                                        </div>
+                                        <div className="bg-black/40 border border-white/10 p-4 rounded-xl">
+                                            <p className="text-[9px] text-gray-500 uppercase tracking-widest">Network Yield</p>
+                                            <p className="text-sm text-emerald-400 font-mono mt-1">
+                                                {selectedBlock.type === 'rwa' ? '+ BTC Fee' : '+ EW Flow'}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
                 </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-white/5 border border-white/10 p-3 rounded-lg">
-                        <span class="text-[10px] text-gray-400 block mb-1 uppercase">Axiom Yield ($SOV)</span>
-                        <span class="font-mono text-lg" id="modal-yield">+4.22/hr</span>
-                    </div>
-                    <div class="bg-white/5 border border-white/10 p-3 rounded-lg">
-                        <span class="text-[10px] text-gray-400 block mb-1 uppercase">Core Temp</span>
-                        <span class="font-mono text-lg text-orange-400" id="modal-temp">180°C</span>
-                    </div>
-                </div>
-            </div>
-            
-            <button class="mt-6 w-full py-3 bg-[#00F0FF]/10 hover:bg-[#00F0FF]/20 border border-[#00F0FF]/50 rounded text-sm tracking-widest uppercase transition-colors">
-                Initialize Deep Scan
-            </button>
-        </div>
-    </div>
-
-    <div class="dock">
-        <div class="dock-icon group relative">
-            <svg class="w-6 h-6 text-gray-300 group-hover:text-[#00F0FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-        </div>
-        <div class="dock-icon group relative">
-            <svg class="w-6 h-6 text-gray-300 group-hover:text-[#00F0FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-        </div>
-        <div class="dock-icon group relative">
-            <svg class="w-6 h-6 text-gray-300 group-hover:text-[#00F0FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
-        </div>
-    </div>
-
-    <script>
-        // 1. Generate Starfield
-        const canvas = document.getElementById('starfield');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        const stars = [];
-        for (let i = 0; i < 400; i++) {
-            stars.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                radius: Math.random() * 1.5,
-                alpha: Math.random()
-            });
+            );
         }
 
-        function drawStars() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            stars.forEach(star => {
-                ctx.beginPath();
-                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
-                ctx.fill();
-                // Twinkle effect
-                star.alpha += (Math.random() - 0.5) * 0.05;
-                if (star.alpha < 0.1) star.alpha = 0.1;
-                if (star.alpha > 1) star.alpha = 1;
-            });
-            requestAnimationFrame(drawStars);
-        }
-        drawStars();
-
-        // 2. Generate Fractal Clusters (Megastructure)
-        const ring = document.getElementById('ring-1');
-        const numClusters = 16;
-        const radius = 400;
-
-        for (let i = 0; i < numClusters; i++) {
-            const angle = (i / numClusters) * Math.PI * 2;
-            const x = Math.cos(angle) * radius;
-            const z = Math.sin(angle) * radius;
-
-            const cluster = document.createElement('div');
-            cluster.className = 'cluster-block flex items-center justify-center';
-            // Align block to face outward from center
-            cluster.style.transform = `translate3d(${x}px, 0px, ${z}px) rotateY(${-angle + Math.PI/2}rad)`;
-            
-            // Add Data Beam
-            const beam = document.createElement('div');
-            beam.className = 'uplink-beam';
-            cluster.appendChild(beam);
-
-            // Add Interaction
-            cluster.onclick = () => openModal(`Sector ${String.fromCharCode(65 + i)}-${Math.floor(Math.random()*1000)}`);
-
-            ring.appendChild(cluster);
-        }
-
-        // 3. Mouse Parallax Effect
-        document.addEventListener('mousemove', (e) => {
-            const xAxis = (window.innerWidth / 2 - e.pageX) / 40;
-            const yAxis = (window.innerHeight / 2 - e.pageY) / 40;
-            ring.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-        });
-
-        // 4. Live Telemetry Simulators
-        setInterval(() => {
-            // Update Clock
-            const now = new Date();
-            document.getElementById('epoch-clock').innerText = 
-                `${now.getUTCFullYear()}.${String(now.getUTCMonth()+1).padStart(2,'0')}.${String(now.getUTCDate()).padStart(2,'0')} ${String(now.getUTCHours()).padStart(2,'0')}:${String(now.getUTCMinutes()).padStart(2,'0')}:${String(now.getUTCSeconds()).padStart(2,'0')}`;
-            
-            // Fluctuate Hashrate slightly
-            const baseHash = 1.42;
-            const fluctuation = (Math.random() * 0.04 - 0.02);
-            document.getElementById('live-hashrate').innerText = (baseHash + fluctuation).toFixed(3) + ' EH/s';
-        }, 1000);
-
-        // 5. Modal Logic
-        const modal = document.getElementById('inspector-modal');
-        function openModal(id) {
-            document.getElementById('modal-cluster-id').innerText = `Cluster ${id}`;
-            // Randomize data to make it feel alive upon click
-            document.getElementById('modal-load').innerText = (70 + Math.random() * 25).toFixed(1) + '%';
-            document.getElementById('modal-yield').innerText = '+' + (3 + Math.random() * 2).toFixed(2) + '/hr';
-            document.getElementById('modal-micro-cubes').innerText = Math.floor(800000 + Math.random() * 400000).toLocaleString();
-            
-            modal.classList.remove('hidden');
-        }
-
-        function closeModal() {
-            modal.classList.add('hidden');
-        }
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
     </script>
 </body>
 </html>
