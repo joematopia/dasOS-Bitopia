@@ -1,102 +1,355 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bitopia // Citizen Terminal v3.0</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dasOS | Bitopia Sovereign Network</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-        body { background-color: #050505; color: #4ade80; font-family: 'JetBrains Mono', monospace; overflow-x: hidden; }
-        .glow-box { box-shadow: 0 0 20px rgba(74, 222, 128, 0.05); transition: all 0.3s ease; }
-        .glow-box:hover { box-shadow: 0 0 30px rgba(74, 222, 128, 0.15); border-color: #4ade80; }
-        /* Dimensional Pulse Animation */
-        @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 0.7; } 100% { opacity: 0.3; } }
-        .uplink-dot { animation: pulse 2s infinite; }
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap');
+
+        :root {
+            --axiom-cyan: #00F0FF;
+            --space-dark: #050505;
+            --glass-bg: rgba(10, 10, 15, 0.4);
+            --glass-border: rgba(0, 240, 255, 0.15);
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: var(--space-dark);
+            color: white;
+            overflow: hidden; /* Lock the viewport */
+            margin: 0;
+            padding: 0;
+        }
+
+        /* The Glassmorphism standard */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .glass-modal {
+            background: rgba(5, 5, 8, 0.75);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.1);
+        }
+
+        /* 3D Parallax Environment */
+        .parallax-container {
+            perspective: 1200px;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform-style: preserve-3d;
+        }
+
+        /* Fractal Cluster Design (Blocks within Blocks) */
+        .cluster-block {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background-color: rgba(5, 10, 20, 0.8);
+            border: 1px solid rgba(0, 240, 255, 0.4);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2), inset 0 0 20px rgba(0, 240, 255, 0.1);
+            transform-style: preserve-3d;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            /* The Micro-Grid Illusion */
+            background-image: 
+                linear-gradient(to right, rgba(0, 240, 255, 0.15) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 240, 255, 0.15) 1px, transparent 1px);
+            background-size: 8px 8px; /* Creates 100 visible sub-sectors per face */
+        }
+
+        .cluster-block:hover {
+            border-color: var(--axiom-cyan);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.6), inset 0 0 30px rgba(0, 240, 255, 0.3);
+            z-index: 100;
+        }
+
+        /* The Data Uplink Beam */
+        .uplink-beam {
+            position: absolute;
+            top: -1000px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 1000px;
+            background: linear-gradient(to bottom, transparent, rgba(0, 240, 255, 0.8));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .cluster-block:hover .uplink-beam {
+            opacity: 1;
+        }
+
+        /* Orbit Animation */
+        @keyframes orbit {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
+        }
+
+        .megastructure-ring {
+            position: absolute;
+            transform-style: preserve-3d;
+            animation: orbit 120s linear infinite;
+        }
+
+        /* MacOS-style Bottom Dock */
+        .dock {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 16px;
+            padding: 12px 24px;
+            background: rgba(10, 10, 15, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            z-index: 50;
+        }
+
+        .dock-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .dock-icon:hover {
+            transform: scale(1.2) translateY(-10px);
+            background: rgba(0, 240, 255, 0.1);
+            border-color: var(--axiom-cyan);
+        }
+
+        /* Pulse Animation for Live Data */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .live-dot {
+            width: 6px;
+            height: 6px;
+            background-color: var(--axiom-cyan);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px var(--axiom-cyan);
+            animation: pulse 2s infinite;
+        }
     </style>
 </head>
 <body>
-    <div id="root"></div>
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
+    <canvas id="starfield" class="fixed inset-0 z-[-1] pointer-events-none"></canvas>
 
-        function App() {
-            const [access, setAccess] = useState(false);
-            const [pass, setPass] = useState("");
-            const [efficiency, setEfficiency] = useState(92.4);
+    <nav class="fixed top-0 w-full glass-panel z-50 flex justify-between items-center px-6 py-3 text-xs tracking-widest uppercase">
+        <div class="flex items-center gap-6">
+            <div class="font-bold text-white text-sm tracking-widest flex items-center gap-2">
+                <div class="w-4 h-4 rounded-full border border-[#00F0FF] flex items-center justify-center">
+                    <div class="w-1.5 h-1.5 bg-[#00F0FF] rounded-full"></div>
+                </div>
+                dasOS
+            </div>
+            <div class="text-gray-400 border-l border-gray-700 pl-6 flex items-center gap-2">
+                <span class="live-dot"></span> Bitopia Mainnet
+            </div>
+        </div>
 
-            // Simulate the "Beyond 3 Dimensions" jitter of live data
-            useEffect(() => {
-                if (access) {
-                    const interval = setInterval(() => {
-                        setEfficiency(prev => (prev + (Math.random() * 0.4 - 0.2)).toFixed(2));
-                    }, 3000);
-                    return () => clearInterval(interval);
-                }
-            }, [access]);
+        <div class="flex gap-8 text-gray-300">
+            <div class="flex flex-col">
+                <span class="text-[10px] text-gray-500">Global Hashrate</span>
+                <span id="live-hashrate" class="text-[#00F0FF] font-mono">1.42 EH/s</span>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-[10px] text-gray-500">Active Micro-Nodes</span>
+                <span id="live-nodes" class="font-mono">1,048,576</span>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-[10px] text-gray-500">$SOV Parity</span>
+                <span class="font-mono">$1.00 USD</span>
+            </div>
+            <div class="flex flex-col text-right">
+                <span class="text-[10px] text-gray-500">Space-Time Epoch</span>
+                <span id="epoch-clock" class="font-mono text-white">0000.00.00</span>
+            </div>
+        </div>
+    </nav>
 
-            if (!access) {
-                return (
-                    <div className="min-h-screen flex items-center justify-center p-4">
-                        <div className="w-full max-w-md border border-green-900 p-8 rounded bg-gray-950 glow-box">
-                            <h1 className="text-green-500 text-xl mb-6 tracking-widest text-center uppercase">Bitopia // Secure Uplink</h1>
-                            <input type="password" placeholder="ENTER PASSKEY" className="w-full bg-black border border-green-800 text-green-500 p-3 mb-4 text-center outline-none focus:border-green-400" onChange={(e) => setPass(e.target.value)} />
-                            <button onClick={() => pass === "BITOPIA_2026" ? setAccess(true) : alert("DENIED")} className="w-full bg-green-950 border border-green-500 text-green-500 py-3 uppercase hover:bg-green-500 hover:text-black transition-all">Authenticate</button>
-                        </div>
+    <main class="parallax-container" id="universe">
+        <div class="megastructure-ring" id="ring-1">
+            </div>
+    </main>
+
+    <div id="inspector-modal" class="fixed inset-0 z-[100] flex items-center justify-center hidden bg-black/60 backdrop-blur-sm transition-opacity">
+        <div class="glass-modal w-[450px] p-6 rounded-2xl relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">✕</button>
+            
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 bg-[#00F0FF]/10 border border-[#00F0FF]/30 rounded flex items-center justify-center">
+                    <svg class="w-6 h-6 text-[#00F0FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold tracking-wide" id="modal-cluster-id">Cluster Sector Alpha</h2>
+                    <p class="text-xs text-[#00F0FF] uppercase tracking-widest font-mono">Status: Optimal Convergence</p>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div class="bg-white/5 border border-white/10 p-3 rounded-lg flex justify-between items-center">
+                    <span class="text-xs text-gray-400 uppercase">Micro-Cubes Contained</span>
+                    <span class="font-mono text-white" id="modal-micro-cubes">1,024,000</span>
+                </div>
+                
+                <div class="bg-white/5 border border-white/10 p-3 rounded-lg">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs text-gray-400 uppercase">Compute Load</span>
+                        <span class="font-mono text-[#00F0FF]" id="modal-load">84.2%</span>
                     </div>
-                );
-            }
-
-            return (
-                <div className="p-8 max-w-6xl mx-auto">
-                    <header className="mb-12 border-b border-green-900/50 pb-6 flex justify-between items-end">
-                        <div>
-                            <div className="flex items-center gap-2 mb-1">
-                                <span className="w-2 h-2 bg-green-500 rounded-full uplink-dot"></span>
-                                <span className="text-[10px] text-green-700 tracking-[0.3em] uppercase">Uplink: Axiom-4 Swarm</span>
-                            </div>
-                            <h1 className="text-4xl font-black tracking-tighter uppercase italic text-white">Bitopia <span className="text-green-500">//</span> Terminal</h1>
-                        </div>
-                        <button onClick={() => setAccess(false)} className="text-red-900 border border-red-900 px-4 py-1 text-[10px] hover:bg-red-900 hover:text-white transition-all uppercase tracking-widest">Terminate Session</button>
-                    </header>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-                        <div className="border border-green-900 p-6 bg-gray-950/50 glow-box relative overflow-hidden">
-                            <div className="absolute top-0 right-0 p-2 text-[8px] text-green-900">TLM_01</div>
-                            <h2 className="text-xs text-gray-500 mb-4 uppercase tracking-[0.2em]">🛰️ Swarm Telemetry</h2>
-                            <div className="flex justify-between items-end"><span className="text-sm">Active Nodes</span><span className="text-2xl text-white">142</span></div>
-                            <div className="flex justify-between items-end mt-2"><span className="text-sm">Efficiency</span><span className="text-2xl text-white">{efficiency}%</span></div>
-                        </div>
-
-                        <div className="border border-green-900 p-6 bg-gray-950/50 glow-box relative">
-                            <div className="absolute top-0 right-0 p-2 text-[8px] text-green-900">ECON_TRX</div>
-                            <h2 className="text-xs text-gray-500 mb-4 uppercase tracking-[0.2em]">⚡ Thermodynamic Parity</h2>
-                            <div className="flex justify-between items-end"><span className="text-sm">Unit: E-Watt</span><span className="text-2xl text-yellow-500">Fixed</span></div>
-                            <div className="flex justify-between items-end mt-2"><span className="text-sm">SOV Burn Rate</span><span className="text-2xl text-white">0.80 <span className="text-xs">/ unit</span></span></div>
-                        </div>
-
-                        <div className="border border-green-900 p-6 bg-gray-950/50 glow-box relative">
-                            <div className="absolute top-0 right-0 p-2 text-[8px] text-green-900">REG_AUTH</div>
-                            <h2 className="text-xs text-gray-500 mb-4 uppercase tracking-[0.2em]">🏛️ Jurisdiction</h2>
-                            <div className="flex justify-between items-end"><span className="text-sm">DAOs</span><span className="text-2xl text-white">47</span></div>
-                            <div className="flex justify-between items-end mt-2"><span className="text-sm">BTC Reserve</span><span className="text-2xl text-orange-500">12.4k</span></div>
-                        </div>
-                    </div>
-
-                    <div className="border border-gray-800 bg-gray-950 p-12 rounded-lg text-center relative">
-                         <div className="text-xs text-gray-600 mb-8 tracking-[0.5em] uppercase italic">Sovereign Treasury Staking Interface</div>
-                         <div className="text-5xl font-bold text-white mb-2">14.2% <span className="text-green-500 text-sm italic font-normal">Est. APY (Paid in BTC)</span></div>
-                         <input type="range" className="w-full h-1 bg-gray-900 rounded-full appearance-none cursor-pointer accent-green-500 mb-8" />
-                         <button className="px-12 py-4 bg-transparent border border-green-500 text-green-500 uppercase tracking-[0.3em] text-xs hover:bg-green-500 hover:text-black transition-all">Engage Protocol</button>
+                    <div class="w-full bg-black rounded-full h-1.5">
+                        <div class="bg-[#00F0FF] h-1.5 rounded-full" style="width: 84.2%"></div>
                     </div>
                 </div>
-            );
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-white/5 border border-white/10 p-3 rounded-lg">
+                        <span class="text-[10px] text-gray-400 block mb-1 uppercase">Axiom Yield ($SOV)</span>
+                        <span class="font-mono text-lg" id="modal-yield">+4.22/hr</span>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 p-3 rounded-lg">
+                        <span class="text-[10px] text-gray-400 block mb-1 uppercase">Core Temp</span>
+                        <span class="font-mono text-lg text-orange-400" id="modal-temp">180°C</span>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="mt-6 w-full py-3 bg-[#00F0FF]/10 hover:bg-[#00F0FF]/20 border border-[#00F0FF]/50 rounded text-sm tracking-widest uppercase transition-colors">
+                Initialize Deep Scan
+            </button>
+        </div>
+    </div>
+
+    <div class="dock">
+        <div class="dock-icon group relative">
+            <svg class="w-6 h-6 text-gray-300 group-hover:text-[#00F0FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+        </div>
+        <div class="dock-icon group relative">
+            <svg class="w-6 h-6 text-gray-300 group-hover:text-[#00F0FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        </div>
+        <div class="dock-icon group relative">
+            <svg class="w-6 h-6 text-gray-300 group-hover:text-[#00F0FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+        </div>
+    </div>
+
+    <script>
+        // 1. Generate Starfield
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const stars = [];
+        for (let i = 0; i < 400; i++) {
+            stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 1.5,
+                alpha: Math.random()
+            });
         }
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+        function drawStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            stars.forEach(star => {
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
+                ctx.fill();
+                // Twinkle effect
+                star.alpha += (Math.random() - 0.5) * 0.05;
+                if (star.alpha < 0.1) star.alpha = 0.1;
+                if (star.alpha > 1) star.alpha = 1;
+            });
+            requestAnimationFrame(drawStars);
+        }
+        drawStars();
+
+        // 2. Generate Fractal Clusters (Megastructure)
+        const ring = document.getElementById('ring-1');
+        const numClusters = 16;
+        const radius = 400;
+
+        for (let i = 0; i < numClusters; i++) {
+            const angle = (i / numClusters) * Math.PI * 2;
+            const x = Math.cos(angle) * radius;
+            const z = Math.sin(angle) * radius;
+
+            const cluster = document.createElement('div');
+            cluster.className = 'cluster-block flex items-center justify-center';
+            // Align block to face outward from center
+            cluster.style.transform = `translate3d(${x}px, 0px, ${z}px) rotateY(${-angle + Math.PI/2}rad)`;
+            
+            // Add Data Beam
+            const beam = document.createElement('div');
+            beam.className = 'uplink-beam';
+            cluster.appendChild(beam);
+
+            // Add Interaction
+            cluster.onclick = () => openModal(`Sector ${String.fromCharCode(65 + i)}-${Math.floor(Math.random()*1000)}`);
+
+            ring.appendChild(cluster);
+        }
+
+        // 3. Mouse Parallax Effect
+        document.addEventListener('mousemove', (e) => {
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 40;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 40;
+            ring.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        });
+
+        // 4. Live Telemetry Simulators
+        setInterval(() => {
+            // Update Clock
+            const now = new Date();
+            document.getElementById('epoch-clock').innerText = 
+                `${now.getUTCFullYear()}.${String(now.getUTCMonth()+1).padStart(2,'0')}.${String(now.getUTCDate()).padStart(2,'0')} ${String(now.getUTCHours()).padStart(2,'0')}:${String(now.getUTCMinutes()).padStart(2,'0')}:${String(now.getUTCSeconds()).padStart(2,'0')}`;
+            
+            // Fluctuate Hashrate slightly
+            const baseHash = 1.42;
+            const fluctuation = (Math.random() * 0.04 - 0.02);
+            document.getElementById('live-hashrate').innerText = (baseHash + fluctuation).toFixed(3) + ' EH/s';
+        }, 1000);
+
+        // 5. Modal Logic
+        const modal = document.getElementById('inspector-modal');
+        function openModal(id) {
+            document.getElementById('modal-cluster-id').innerText = `Cluster ${id}`;
+            // Randomize data to make it feel alive upon click
+            document.getElementById('modal-load').innerText = (70 + Math.random() * 25).toFixed(1) + '%';
+            document.getElementById('modal-yield').innerText = '+' + (3 + Math.random() * 2).toFixed(2) + '/hr';
+            document.getElementById('modal-micro-cubes').innerText = Math.floor(800000 + Math.random() * 400000).toLocaleString();
+            
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+        }
     </script>
 </body>
 </html>
