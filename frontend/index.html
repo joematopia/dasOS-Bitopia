@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>dasOS // The Fabric of Bitopia</title>
+    <title>dasOS // The Command Stream</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -12,7 +12,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@100;400;700&display=swap');
 
         :root {
-            --bg-deep: #02040A; 
+            --bg-deep: #020308; /* Deepened the space abyss slightly */
             --glass-bg: rgba(6, 11, 20, 0.5);
             --glass-border: rgba(0, 240, 255, 0.15);
             --cyan: #00F0FF; --gold: #D4AF37; --purple: #A855F7; --btc: #F7931A;
@@ -23,8 +23,15 @@
             font-family: 'Inter', sans-serif; color: #E2E8F0; user-select: none; perspective: 2000px;
         }
 
-        /* --- 1. THE LIVING BACKGROUND --- */
-        .void-bg { position: absolute; inset: 0; z-index: -10; background: radial-gradient(circle at 50% 50%, #061122, var(--bg-deep)); }
+        /* --- 1. THE LIVING BACKGROUND (Upgraded with Canvas) --- */
+        .void-bg { 
+            position: absolute; 
+            /* Make it larger than the screen so parallax translation doesn't show edges */
+            top: -5%; left: -5%; width: 110%; height: 110%; 
+            z-index: -10; 
+            background: radial-gradient(circle at 50% 50%, #081224, var(--bg-deep)); 
+            transition: transform 0.1s ease-out;
+        }
         
         .parallax-wrapper {
             position: absolute; inset: -5%; display: flex; align-items: center; justify-content: center;
@@ -67,12 +74,10 @@
             position: absolute; top: 50%; left: 50%; transform-style: preserve-3d; pointer-events: none;
         }
 
-        /* The Data Uplinks (Raining from Cosmos) - Perfectly parallel now */
         .cryptographic-uplink {
             position: absolute; left: 0; top: 0; width: 2px; height: 200px;
             background: linear-gradient(to top, var(--cyan), transparent);
             transform-origin: bottom center;
-            /* Pointing straight up on the Z axis, hitting the top of the block perfectly */
             transform: translate(-50%, -100%) rotateX(-90deg) translateZ(14px); 
             opacity: 0.15; transition: all 0.4s ease; pointer-events: none;
         }
@@ -87,7 +92,7 @@
         .block-interactive {
             position: absolute; top: -20px; left: -20px; width: 40px; height: 40px;
             display: flex; align-items: center; justify-content: center;
-            transform-style: preserve-3d; cursor: pointer; pointer-events: auto; z-index: 10;
+            transform-style: preserve-3d; cursor: pointer; pointer-events: auto; z-index: 50;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .block-interactive.hovered { z-index: 100; transform: scale(1.8) translateZ(10px); }
@@ -96,6 +101,20 @@
         .block-interactive.hovered .cube-3d { filter: drop-shadow(0 0 20px var(--cyan)); }
         
         .cube-face { position: absolute; width: 28px; height: 28px; border: 1px solid rgba(0,240,255,0.4); box-shadow: inset 0 0 12px rgba(0,0,0,0.8); }
+        
+        /* FRACTAL MICRO-GRID */
+        .cube-face::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(0, 240, 255, 0.25) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.25) 1px, transparent 1px);
+            background-size: 4px 4px; 
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
         .face-top { transform: rotateX(90deg) translateZ(14px); background: linear-gradient(135deg, rgba(0,240,255,0.8), rgba(0,240,255,0.2)); }
         .face-front { transform: translateZ(14px); background: linear-gradient(180deg, rgba(0,180,255,0.8), rgba(0,100,200,0.2)); }
         .face-right { transform: rotateY(90deg) translateZ(14px); background: linear-gradient(180deg, rgba(0,150,255,0.8), rgba(0,50,150,0.2)); }
@@ -110,18 +129,16 @@
             border: 1px solid var(--glass-border); box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
 
-        .dasos-topbar { position: fixed; top: 24px; left: 50%; transform: translateX(-50%); border-radius: 20px; padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; width: 80%; max-width: 1200px; z-index: 70; }
-        .dasos-dock { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); border-radius: 24px; padding: 10px 16px; display: flex; gap: 20px; z-index: 70; }
+        .dasos-topbar { position: fixed; top: 24px; left: 24px; right: 280px; border-radius: 20px; padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; z-index: 70; }
+        .epoch-box { position: fixed; top: 24px; right: 24px; border-radius: 20px; padding: 10px 20px; display: flex; align-items: center; z-index: 70; }
+
+        .dasos-dock { position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%); border-radius: 24px; padding: 10px 16px; display: flex; gap: 20px; z-index: 70; } 
         
         .dock-icon { width: 48px; height: 48px; border-radius: 12px; border: 1px solid rgba(0,240,255,0.1); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.7); transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; position: relative; background: rgba(0,0,0,0.2); }
         .dock-icon svg { width: 24px; height: 24px; }
         .dock-icon:hover { transform: scale(1.3) translateY(-10px); margin: 0 8px; border-color: var(--cyan); color: var(--cyan); background: rgba(0, 240, 255, 0.2); box-shadow: 0 10px 25px rgba(0,240,255,0.2); z-index: 80;}
         .dock-icon.active { border-color: var(--cyan); color: var(--cyan); background: rgba(0,240,255,0.1); }
         .dock-icon.active::after { content: ''; position: absolute; bottom: -8px; width: 20px; height: 3px; background: var(--cyan); border-radius: 2px; box-shadow: 0 0 10px var(--cyan); }
-
-        .widget-panel-left { position: fixed; top: 90px; left: 24px; width: 320px; display: flex; flex-direction: column; gap: 16px; z-index: 45; pointer-events: none; }
-        .widget-panel-right { position: fixed; top: 90px; right: 24px; width: 260px; display: flex; flex-direction: column; gap: 16px; z-index: 45; pointer-events: none; }
-        .widget { border-radius: 16px; padding: 16px; pointer-events: auto; }
 
         .dasos-window { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.95); width: 900px; height: 580px; border-radius: 16px; display: flex; flex-direction: column; z-index: 60; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); background: rgba(6, 11, 20, 0.85); }
         .dasos-window.open { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
@@ -139,15 +156,17 @@
         
         .main-view { flex: 1; padding: 32px; overflow-y: auto; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
-        .scroll-custom::-webkit-scrollbar { width: 4px; }
-        .scroll-custom::-webkit-scrollbar-thumb { background: rgba(0, 240, 255, 0.3); border-radius: 4px; }
-
+        
+        .widget-panel-left { position: fixed; bottom: 0; left: 0; width: 100vw; height: 48px; display: flex; align-items: center; z-index: 45; pointer-events: none; }
+        .telemetry-bar { width: 100%; height: 100%; border-radius: 16px 16px 0 0; padding: 8px 32px; display: flex; align-items: center; pointer-events: auto; }
+        .scroll-hide::-webkit-scrollbar { display: none; }
+        
         @keyframes beam-up { 0% { height: 0; opacity: 1; } 100% { height: 350px; opacity: 0; } }
         .action-beam { position: absolute; bottom: 0; left: 50%; width: 4px; background: var(--cyan); transform: translateX(-50%); box-shadow: 0 0 20px var(--cyan); pointer-events: none; z-index: 60; }
 
         .node-inspector-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px);
-            display: flex; align-items: center; justify-content: center; z-index: 100;
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(12px);
+            display: flex; align-items: center; justify-content: center; z-index: 9999;
             opacity: 0; pointer-events: none; transition: opacity 0.3s;
         }
         .node-inspector-overlay.active { opacity: 1; pointer-events: auto; }
@@ -179,7 +198,7 @@
             const [telemetry, setTelemetry] = React.useState(["[SYS] Bitopia Core Synchronized."]);
             const [actionBeam, setActionBeam] = React.useState(false);
 
-            // ENGINE LOOP
+            // ENGINE LOOP & MOUSE TRACKING
             React.useEffect(() => {
                 const handleMouseMove = (e) => {
                     const x = (e.clientX / window.innerWidth) * 2 - 1;
@@ -191,7 +210,7 @@
                 const interval = setInterval(() => {
                     setEWatts(p => +(p + 4.5).toFixed(2));
                     setEpoch(p => p + 1);
-                    if(Math.random() > 0.7) setTelemetry(prev => [...prev.slice(-6), `[EPOCH ${epoch}] Hashrate nominal. Orbit stable.`]);
+                    if(Math.random() > 0.7) setTelemetry(prev => [...prev.slice(-12), `[EPOCH ${epoch}] Hashrate nominal. Orbit stable.`]);
                 }, 2000);
 
                 return () => {
@@ -199,6 +218,78 @@
                     clearInterval(interval);
                 };
             }, [epoch]);
+
+            // DEEP SPACE CANVAS RENDER LOOP
+            React.useEffect(() => {
+                const canvas = document.getElementById('deep-space-canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                let animationFrameId;
+
+                const resize = () => {
+                    canvas.width = window.innerWidth * 1.1; // Slightly larger to support parallax sliding
+                    canvas.height = window.innerHeight * 1.1;
+                };
+                window.addEventListener('resize', resize);
+                resize();
+
+                // Generate Stars
+                const stars = Array.from({ length: 150 }, () => ({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 1.5 + 0.5,
+                    alpha: Math.random(),
+                    glow: Math.random() > 0.9 // 10% of stars have an extra glow
+                }));
+
+                // Subtle Nebula Dust Clouds
+                const nebulas = [
+                    { x: canvas.width * 0.3, y: canvas.height * 0.4, r: 600, color: 'rgba(70, 40, 180, 0.04)' },
+                    { x: canvas.width * 0.7, y: canvas.height * 0.6, r: 700, color: 'rgba(0, 240, 255, 0.03)' },
+                ];
+
+                const draw = () => {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    // Draw Nebula Clouds
+                    nebulas.forEach(neb => {
+                        const gradient = ctx.createRadialGradient(neb.x, neb.y, 0, neb.x, neb.y, neb.r);
+                        gradient.addColorStop(0, neb.color);
+                        gradient.addColorStop(1, 'transparent');
+                        ctx.fillStyle = gradient;
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    });
+
+                    // Draw Stars
+                    stars.forEach(star => {
+                        ctx.beginPath();
+                        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                        
+                        if (star.glow) {
+                            ctx.shadowBlur = 10;
+                            ctx.shadowColor = '#00F0FF';
+                        } else {
+                            ctx.shadowBlur = 0;
+                        }
+
+                        ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
+                        ctx.fill();
+                        
+                        // Twinkle effect
+                        star.alpha += (Math.random() - 0.5) * 0.02;
+                        if(star.alpha < 0.1) star.alpha = 0.1;
+                        if(star.alpha > 0.9) star.alpha = 0.9;
+                    });
+
+                    animationFrameId = requestAnimationFrame(draw);
+                };
+                draw();
+
+                return () => {
+                    window.removeEventListener('resize', resize);
+                    cancelAnimationFrame(animationFrameId);
+                };
+            }, []);
 
             const triggerBeam = () => {
                 setActionBeam(true);
@@ -214,9 +305,18 @@
                 setTelemetry(prev => [...prev.slice(-6), `[FORGE] Physical matter synthesized on Ledger.`]);
             };
 
-            const handleBlockClick = (block) => {
+            const executeThermodynamicParity = () => {
+                if(eWatts < 1000) return;
+                triggerBeam();
+                setEWatts(p => p - 1000);
+                setSov(p => p + 1000);
+                setTelemetry(prev => [...prev.slice(-6), `[TREASURY] Thermodynamic Parity Executed. 1,000 $SOV minted.`]);
+            };
+
+            const handleBlockClick = (e, block) => {
+                e.stopPropagation(); 
                 setSelectedBlock(block);
-                setTelemetry(prev => [...prev.slice(-6), `[SYS] Inspecting Node Hash #${block.id.toString().padStart(4, '0')}`]);
+                setTelemetry(prev => [...prev.slice(-12), `[SYS] Inspecting Node Hash #${block.id.toString().padStart(4, '0')}`]);
             };
 
             // SVGs
@@ -227,7 +327,7 @@
 
             const renderAppContent = () => {
                 if (activeApp === 'forge') return (
-                    <div className="flex h-full">
+                    <div className="flex h-full w-full">
                         <div className="sidebar">
                             <div className="text-[10px] text-cyan-400 font-mono mb-4 px-2 tracking-widest">CIVILIZATION</div>
                             <div className="sidebar-item active">Orbital Forge</div>
@@ -249,23 +349,71 @@
                         </div>
                     </div>
                 );
-                return <div className="p-8 text-center text-gray-400 font-mono mt-20">SYSTEM DATA ROUTING...<br/><br/>(Explore the Forge to see the Digital Twin interaction)</div>;
+
+                if (activeApp === 'treasury') return (
+                    <div className="flex h-full w-full">
+                        <div className="sidebar">
+                            <div className="text-[10px] text-cyan-400 font-mono mb-4 px-2 tracking-widest">CENTRAL BANK</div>
+                            <div className="sidebar-item active">State Treasury</div>
+                            <div className="sidebar-item">Monetary Policy</div>
+                        </div>
+                        <div className="main-view scroll-custom relative">
+                            <h2 className="text-2xl font-bold mb-2">Thermodynamic Parity</h2>
+                            <p className="text-sm text-gray-400 mb-8">Lock physical energy ($E-WATT) into the sovereign vault to mint stable capital ($SOV).</p>
+
+                            <div className="grid grid-cols-[1fr,auto,1fr] gap-6 items-center">
+                                <div className="bg-black/40 border border-white/10 p-5 rounded-2xl">
+                                    <span className="text-[10px] text-gray-500 uppercase tracking-widest block mb-4">Lock Energy</span>
+                                    <div className="flex items-end justify-between border-b border-white/20 pb-2">
+                                        <input type="text" readOnly value="1,000" className="bg-transparent text-3xl font-mono text-white outline-none w-1/2" />
+                                        <span className="text-sm font-bold text-[#00F0FF] tracking-widest">$E-WATT</span>
+                                    </div>
+                                    <span className="text-[10px] text-gray-500 font-mono mt-2 block">Avail: {eWatts.toLocaleString('en-US', {minimumFractionDigits: 2})}</span>
+                                </div>
+                                <div className="w-10 h-10 rounded-full bg-[#00F0FF]/10 border border-[#00F0FF]/30 flex items-center justify-center text-[#00F0FF]">
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
+                                </div>
+                                <div className="bg-black/40 border border-white/10 p-5 rounded-2xl">
+                                    <span className="text-[10px] text-gray-500 uppercase tracking-widest block mb-4">Mint Capital</span>
+                                    <div className="flex items-end justify-between border-b border-white/20 pb-2">
+                                        <span className="text-3xl font-mono text-white">1,000</span>
+                                        <span className="text-sm font-bold text-white tracking-widest">$SOV</span>
+                                    </div>
+                                    <span className="text-[10px] text-gray-500 font-mono mt-2 block">Peg: $1.00 USD</span>
+                                </div>
+                            </div>
+
+                            <button onClick={executeThermodynamicParity} className="w-full mt-8 bg-cyan-600/20 hover:bg-cyan-500/40 border border-cyan-500 text-cyan-300 py-4 rounded-xl text-sm font-bold transition-all shadow-[0_0_15px_rgba(0,240,255,0.2)] uppercase tracking-widest">
+                                Execute Conversion
+                            </button>
+                        </div>
+                    </div>
+                );
+
+                return <div className="p-8 text-center text-gray-400 font-mono mt-20">SYSTEM DATA ROUTING...<br/><br/>(Explore the Sovereign Apps)</div>;
             };
 
             const openApp = (app) => { setActiveApp(app === activeApp ? null : app); };
-
+            
+            // The Main 3D Parallax for the Planet and Ring
             const parallaxStyle = { transform: `rotateX(${mousePos.y * -8}deg) rotateY(${mousePos.x * 8}deg) translateZ(50px)` };
+            
+            // NEW: The Subdued Background Parallax for the Space Abyss (Translation creates immense depth)
+            const bgParallaxStyle = { transform: `translate(${mousePos.x * -20}px, ${mousePos.y * -20}px)` };
 
             return (
-                <div className={`h-screen w-full relative ${activeApp === 'forge' ? 'forge-mode' : ''}`}>
+                <div className="h-screen w-full relative">
                     
-                    <div className="void-bg"></div>
+                    {/* THE SPACE ABYSS BACKGROUND */}
+                    <div className="void-bg" style={bgParallaxStyle}>
+                        <canvas id="deep-space-canvas" className="w-full h-full"></canvas>
+                    </div>
                     
                     {/* PARALLAX 3D UNIVERSE */}
                     <div className="parallax-wrapper" style={parallaxStyle}>
                         
                         <div className="bitopia-planet">
-                            <div className="planet-grid" onClick={() => { if(activeApp==='forge') setTelemetry(prev => [...prev.slice(-6), `[REGISTRY] Planetary Sector Claimed.`]); }}></div>
+                            <div className="planet-grid"></div>
                         </div>
                         
                         <div className="dyson-ring-framework">
@@ -277,12 +425,11 @@
                                 return (
                                     <div key={`pos-${b.id}`} className="block-orbit-position" style={{ transform: `translate(-50%, -50%) translate3d(${x}px, ${y}px, 0)` }}>
                                         
-                                        {/* Local Rotation wrapper keeps the cube facing the right way */}
                                         <div className="block-local-rotation" style={{ transform: `rotateZ(${-b.angle}deg)` }}>
                                             <div 
                                                 className={`block-interactive ${hoveredBlockId === b.id ? 'hovered' : ''}`}
                                                 onMouseEnter={() => setHoveredBlockId(b.id)} onMouseLeave={() => setHoveredBlockId(null)}
-                                                onClick={() => handleBlockClick(b)}
+                                                onClick={(e) => handleBlockClick(e, b)}
                                             >
                                                 <div className="cube-3d">
                                                     <div className={`cube-face ${b.type === 'rwa' ? 'gold-top' : 'face-top'}`}></div>
@@ -292,7 +439,6 @@
                                             </div>
                                         </div>
 
-                                        {/* The Axiom Uplink Beam (Outside local rotation so it always shoots straight UP) */}
                                         <div className={`cryptographic-uplink ${hoveredBlockId === b.id ? 'active' : ''}`}></div>
                                     </div>
                                 );
@@ -313,29 +459,20 @@
                             <span className="text-cyan-400 flex flex-col items-end"><span className="text-[8px] text-gray-500">KINETIC FUEL</span>{eWatts.toLocaleString('en-US', {minimumFractionDigits: 2})} EW</span>
                             <span className="text-green-400 flex flex-col items-end"><span className="text-[8px] text-gray-500">STABLE RESERVE</span>{sov.toLocaleString('en-US', {minimumFractionDigits: 2})} SOV</span>
                             <span className="text-purple-400 flex flex-col items-end"><span className="text-[8px] text-gray-500">VOTING POWER</span>{gov.toFixed(0)} GOV</span>
-                            <div className="h-6 w-px bg-white/10"></div>
-                            <div className="flex items-center gap-2 text-white"><div className="w-2 h-2 bg-emerald-400 rounded-full shadow-[0_0_8px_#10B981]"></div> ONLINE</div>
                         </div>
                     </div>
 
-                    {/* LEFT WIDGET PANEL (Live Telemetry) */}
-                    <div className="widget-panel-left">
-                        <div className="dasos-glass widget flex flex-col h-64">
-                            <p className="text-[10px] text-gray-500 font-mono uppercase tracking-widest mb-3 border-b border-white/10 pb-2">Live Telemetry</p>
-                            <div className="flex-1 overflow-y-auto scroll-hide font-mono text-[10px] space-y-3 flex flex-col-reverse">
-                                {telemetry.slice().reverse().map((log, i) => (
-                                    <div key={i} className="text-gray-300 leading-snug border-l-2 border-cyan-500/50 pl-3">{log}</div>
-                                ))}
-                            </div>
+                    {/* TOP RIGHT EPOCH & CIV BOX */}
+                    <div className="dasos-glass epoch-box">
+                        <div className="flex flex-col items-end mr-4 border-r border-white/10 pr-4">
+                            <span className="text-[8px] text-gray-500 font-mono uppercase tracking-widest mb-1">Space-Time Epoch</span>
+                            <span className="text-xl font-bold text-white font-mono leading-none">{epoch.toString().padStart(6, '0')}</span>
                         </div>
-                    </div>
-
-                    {/* RIGHT WIDGET PANEL (Space-Time Epoch) */}
-                    <div className="widget-panel-right">
-                        <div className="dasos-glass widget">
-                            <p className="text-[10px] text-gray-500 font-mono uppercase tracking-widest mb-3 border-b border-white/10 pb-2">Space-Time Epoch</p>
-                            <h3 className="text-3xl font-bold text-white font-mono">{epoch.toString().padStart(6, '0')}</h3>
-                            <p className="text-xs text-emerald-400 font-mono mt-2">Block Height Synced</p>
+                        <div className="flex flex-col items-start min-w-[60px]">
+                            <span className="text-[8px] text-gray-500 font-mono uppercase tracking-widest mb-1">Civ Status</span>
+                            <span className="text-[10px] text-emerald-400 font-mono uppercase flex items-center gap-1">
+                                <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse shadow-[0_0_8px_#10B981]"></div> Synced
+                            </span>
                         </div>
                     </div>
 
@@ -354,6 +491,18 @@
                         </div>
                         <div className="window-content">
                             {activeApp && renderAppContent()}
+                        </div>
+                    </div>
+
+                    {/* THE BOTTOM COMMAND STREAM BAR */}
+                    <div className="widget-panel-left">
+                        <div className="dasos-glass telemetry-bar font-mono text-[10px] space-x-6">
+                            <p className="text-cyan-400 font-bold uppercase tracking-[0.2em] border-r border-white/10 pr-6 pb-0 self-center">LIVE COMMAND STREAM</p>
+                            <div className="flex-1 overflow-x-auto scroll-hide space-x-4 flex items-center">
+                                {telemetry.slice().reverse().map((log, i) => (
+                                    <div key={i} className="text-gray-300 leading-snug border-l-2 border-cyan-500/50 pl-3 whitespace-nowrap">{log}</div>
+                                ))}
+                            </div>
                         </div>
                     </div>
 
