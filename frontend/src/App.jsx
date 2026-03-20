@@ -13,7 +13,7 @@ export default function App() {
     const [sov, setSov] = useState(18450.00); 
     const [gov, setGov] = useState(850); 
     const [btc, setBtc] = useState(24.505); 
-    const [epoch, setEpoch] = useState(2020);
+    const [epoch, setEpoch] = useState(2028);
     
     // DATA
     const [blocks, setBlocks] = useState(Array.from({length: 12}, (_, i) => ({ 
@@ -135,7 +135,7 @@ export default function App() {
     const bgParallaxStyle = { transform: `translate(${mousePos.x * -20}px, ${mousePos.y * -20}px)` };
 
     return (
-        <div className="h-screen w-full relative overflow-hidden">
+        <div className="h-screen w-full relative overflow-hidden" style={{ perspective: '2000px' }}>
             
             {/* THE SPACE ABYSS BACKGROUND */}
             <div className="void-bg" style={bgParallaxStyle}>
@@ -148,7 +148,8 @@ export default function App() {
                     <div className="planet-grid"></div>
                 </div>
                 
-                <div className="axiom-swarm-framework">
+                {/* RESTORED DYSON RING CLASS FOR 3D TILT */}
+                <div className="dyson-ring-framework">
                     {blocks.map(b => {
                         const rad = (b.angle * Math.PI) / 180;
                         const x = Math.cos(rad) * b.radius; 
@@ -176,7 +177,7 @@ export default function App() {
                 </div>
             </div>
 
-            {/* TOP UNIFIED PILL BAR (RESTORED) */}
+            {/* TOP UNIFIED PILL BAR */}
             <div className="dasos-glass dasos-topbar">
                 <div className="flex items-center gap-6">
                     <div className="flex items-center gap-2">
@@ -184,7 +185,7 @@ export default function App() {
                             <ellipse cx="50" cy="65" rx="40" ry="12" fill="none" stroke="#fff" strokeWidth="4" transform="rotate(-15 50 65)"/>
                             <ellipse cx="50" cy="65" rx="35" ry="10" fill="none" stroke="#00F0FF" strokeWidth="4" transform="rotate(15 50 65)"/>
                         </svg>
-                        <span className="font-bold text-white tracking-widest text-sm">BLOCKS</span>
+                        <span className="font-bold text-white tracking-widest text-sm">dasOS CORE</span>
                     </div>
                     <span className="text-gray-500 border-l border-white/10 pl-6 text-xs">{activeApp ? activeApp.toUpperCase() : 'DESKTOP'}</span>
                 </div>
@@ -195,7 +196,7 @@ export default function App() {
                 </div>
             </div>
 
-            {/* TOP RIGHT EPOCH & CIV BOX (RESTORED) */}
+            {/* TOP RIGHT EPOCH & CIV BOX */}
             <div className="dasos-glass epoch-box">
                 <div className="flex flex-col items-end mr-4 border-r border-white/10 pr-4">
                     <span className="text-[8px] text-gray-500 font-mono uppercase tracking-widest mb-1">Space-Time Epoch</span>
@@ -227,7 +228,7 @@ export default function App() {
                 </div>
             </div>
 
-            {/* THE BOTTOM COMMAND STREAM BAR (RESTORED) */}
+            {/* THE BOTTOM COMMAND STREAM BAR */}
             <div className="widget-panel-left">
                 <div className="dasos-glass telemetry-bar font-mono text-[10px] space-x-6">
                     <p className="text-cyan-400 font-bold uppercase tracking-[0.2em] border-r border-white/10 pr-6 pb-0 self-center">LIVE COMMAND STREAM</p>
@@ -239,7 +240,7 @@ export default function App() {
                 </div>
             </div>
 
-            {/* BOTTOM DOCK (RESTORED) */}
+            {/* BOTTOM DOCK */}
             <div className="dasos-glass dasos-dock">
                 <div className={`dock-icon ${activeApp === 'identity' ? 'active' : ''}`} onClick={() => openApp('identity')} title="Sovereign Identity"><IconIdentity /></div>
                 <div className="w-px h-6 bg-white/10 self-center mx-1"></div>
