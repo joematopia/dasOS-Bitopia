@@ -1,5 +1,4 @@
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@100;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@100;400;700&display=swap');
 
         :root {
             --bg-deep: #020308; /* Deepened the space abyss slightly */
@@ -160,4 +159,3 @@
             opacity: 0; pointer-events: none; transition: opacity 0.3s;
         }
         .node-inspector-overlay.active { opacity: 1; pointer-events: auto; }
-    </style>
