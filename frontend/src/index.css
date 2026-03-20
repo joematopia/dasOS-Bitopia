@@ -1,161 +1,133 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@100;400;700&display=swap');
 
-        :root {
-            --bg-deep: #020308; /* Deepened the space abyss slightly */
-            --glass-bg: rgba(6, 11, 20, 0.5);
-            --glass-border: rgba(0, 240, 255, 0.15);
-            --cyan: #00F0FF; --gold: #D4AF37; --purple: #A855F7; --btc: #F7931A;
-        }
+:root {
+    --bg-deep: #020308;
+    --glass-bg: rgba(6, 11, 20, 0.5);
+    --glass-border: rgba(0, 240, 255, 0.15);
+    --cyan: #00F0FF;
+}
 
-        body { 
-            margin: 0; overflow: hidden; height: 100vh; background-color: var(--bg-deep);
-            font-family: 'Inter', sans-serif; color: #E2E8F0; user-select: none; perspective: 2000px;
-        }
+/* 1. FORCE 3D CONTEXT ON HTML/BODY */
+body, html {
+    margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
+    background-color: var(--bg-deep); font-family: 'Inter', sans-serif;
+    color: #E2E8F0; user-select: none; perspective: 2000px;
+}
 
-        /* --- 1. THE LIVING BACKGROUND (Upgraded with Canvas) --- */
-        .void-bg { 
-            position: absolute; 
-            /* Make it larger than the screen so parallax translation doesn't show edges */
-            top: -5%; left: -5%; width: 110%; height: 110%; 
-            z-index: -10; 
-            background: radial-gradient(circle at 50% 50%, #081224, var(--bg-deep)); 
-            transition: transform 0.1s ease-out;
-        }
-        
-        .parallax-wrapper {
-            position: absolute; inset: -5%; display: flex; align-items: center; justify-content: center;
-            transform-style: preserve-3d; transition: transform 0.1s ease-out; z-index: 0;
-        }
+/* 2. PASS 3D CONTEXT THROUGH REACT'S ROOT DIV */
+#root {
+    width: 100%; height: 100%; transform-style: preserve-3d;
+}
 
-        /* --- 2. BITOPIA (THE PLANET) --- */
-        .bitopia-planet {
-            position: absolute; width: 220px; height: 220px; border-radius: 50%;
-            background: radial-gradient(circle at 35% 35%, rgba(0, 240, 255, 0.15), rgba(0,0,0,0.95));
-            box-shadow: 0 0 80px rgba(0, 240, 255, 0.1), inset 0 0 40px rgba(0, 240, 255, 0.2);
-            border: 1px solid rgba(0,240,255,0.05); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
-            display: flex; align-items: center; justify-content: center; overflow: hidden; transform-style: preserve-3d;
-        }
+/* --- THE BACKGROUND --- */
+.void-bg {
+    position: absolute; top: -5%; left: -5%; width: 110%; height: 110%;
+    z-index: -10; background: radial-gradient(circle at 50% 50%, #081224, var(--bg-deep));
+    transition: transform 0.1s ease-out;
+}
 
-        .planet-grid {
-            position: absolute; inset: 0; border-radius: 50%; opacity: 0;
-            background-image: 
-                linear-gradient(rgba(0, 240, 255, 0.3) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 240, 255, 0.3) 1px, transparent 1px);
-            background-size: 20px 20px; background-position: center;
-            transform: scale(1.1); transition: all 1s ease; mask-image: radial-gradient(circle at center, black 40%, transparent 70%); -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 70%);
-        }
-        
-        .forge-mode .bitopia-planet { box-shadow: 0 0 100px rgba(0, 240, 255, 0.4), inset 0 0 60px rgba(0, 240, 255, 0.6); background: rgba(0,0,0,0.9); }
-        .forge-mode .planet-grid { opacity: 1; transform: scale(1) rotateX(20deg); animation: grid-spin 20s linear infinite; cursor: crosshair; pointer-events: auto; }
-        @keyframes grid-spin { 100% { background-position: 20px 20px; } }
+.parallax-wrapper {
+    position: absolute; inset: -5%; display: flex; align-items: center; justify-content: center;
+    transform-style: preserve-3d; transition: transform 0.1s ease-out; z-index: 0;
+}
 
-        /* --- 3. THE CRYPTOGRAPHIC RING --- */
-        .dyson-ring-framework {
-            position: absolute; width: 700px; height: 700px; border-radius: 50%;
-            border: 1px solid rgba(0, 240, 255, 0.2); transform-style: preserve-3d;
-            box-shadow: 0 0 40px rgba(0,240,255,0.05), inset 0 0 40px rgba(0,240,255,0.05);
-            animation: ring-spin 180s linear infinite;
-        }
-        @keyframes ring-spin { 0% { transform: rotateX(75deg) rotateZ(0deg); } 100% { transform: rotateX(75deg) rotateZ(360deg); } }
+/* --- THE PLANET --- */
+.bitopia-planet {
+    position: absolute; width: 220px; height: 220px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgba(0, 240, 255, 0.15), rgba(0,0,0,0.95));
+    box-shadow: 0 0 80px rgba(0, 240, 255, 0.1), inset 0 0 40px rgba(0, 240, 255, 0.2);
+    border: 1px solid rgba(0,240,255,0.05); transform-style: preserve-3d;
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+}
 
-        /* DECOUPLED BLOCK MATHEMATICS */
-        .block-orbit-position {
-            position: absolute; top: 50%; left: 50%; transform-style: preserve-3d; pointer-events: none;
-        }
+.planet-grid {
+    position: absolute; inset: 0; border-radius: 50%; opacity: 0;
+    background-image: linear-gradient(rgba(0, 240, 255, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 240, 255, 0.3) 1px, transparent 1px);
+    background-size: 20px 20px; background-position: center; transform: scale(1.1);
+}
 
-        .cryptographic-uplink {
-            position: absolute; left: 0; top: 0; width: 2px; height: 200px;
-            background: linear-gradient(to top, var(--cyan), transparent);
-            transform-origin: bottom center;
-            transform: translate(-50%, -100%) rotateX(-90deg) translateZ(14px); 
-            opacity: 0.15; transition: all 0.4s ease; pointer-events: none;
-        }
-        .block-interactive.hovered ~ .cryptographic-uplink {
-            opacity: 1; height: 350px; box-shadow: 0 0 20px var(--cyan);
-        }
+/* --- THE 3D RING --- */
+/* Catching both class names to make it bulletproof! */
+.dyson-ring-framework, .axiom-swarm-framework {
+    position: absolute; width: 700px; height: 700px; border-radius: 50%;
+    border: 1px solid rgba(0, 240, 255, 0.2); transform-style: preserve-3d;
+    box-shadow: 0 0 40px rgba(0,240,255,0.05), inset 0 0 40px rgba(0,240,255,0.05);
+    animation: ring-spin 180s linear infinite;
+}
 
-        .block-local-rotation {
-            position: absolute; top: 0; left: 0; transform-style: preserve-3d;
-        }
+@keyframes ring-spin {
+    0% { transform: rotateX(75deg) rotateZ(0deg); }
+    100% { transform: rotateX(75deg) rotateZ(360deg); }
+}
 
-        .block-interactive {
-            position: absolute; top: -20px; left: -20px; width: 40px; height: 40px;
-            display: flex; align-items: center; justify-content: center;
-            transform-style: preserve-3d; cursor: pointer; pointer-events: auto; z-index: 50;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .block-interactive.hovered { z-index: 100; transform: scale(1.8) translateZ(10px); }
+/* --- BLOCKS --- */
+.block-orbit-position {
+    position: absolute; top: 50%; left: 50%; transform-style: preserve-3d; pointer-events: none;
+}
 
-        .cube-3d { width: 28px; height: 28px; transform-style: preserve-3d; transform: rotateX(-90deg) rotateY(0deg) rotateZ(45deg); }
-        .block-interactive.hovered .cube-3d { filter: drop-shadow(0 0 20px var(--cyan)); }
-        
-        .cube-face { position: absolute; width: 28px; height: 28px; border: 1px solid rgba(0,240,255,0.4); box-shadow: inset 0 0 12px rgba(0,0,0,0.8); }
-        
-        /* FRACTAL MICRO-GRID */
-        .cube-face::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: 
-                linear-gradient(rgba(0, 240, 255, 0.25) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 240, 255, 0.25) 1px, transparent 1px);
-            background-size: 4px 4px; 
-            opacity: 0.7;
-            pointer-events: none;
-        }
+.cryptographic-uplink {
+    position: absolute; left: 0; top: 0; width: 2px; height: 200px;
+    background: linear-gradient(to top, var(--cyan), transparent);
+    transform-origin: bottom center; transform: translate(-50%, -100%) rotateX(-90deg) translateZ(14px);
+    opacity: 0.15; transition: all 0.4s ease; pointer-events: none;
+}
 
-        .face-top { transform: rotateX(90deg) translateZ(14px); background: linear-gradient(135deg, rgba(0,240,255,0.8), rgba(0,240,255,0.2)); }
-        .face-front { transform: translateZ(14px); background: linear-gradient(180deg, rgba(0,180,255,0.8), rgba(0,100,200,0.2)); }
-        .face-right { transform: rotateY(90deg) translateZ(14px); background: linear-gradient(180deg, rgba(0,150,255,0.8), rgba(0,50,150,0.2)); }
+.block-interactive.hovered ~ .cryptographic-uplink { opacity: 1; height: 350px; box-shadow: 0 0 20px var(--cyan); }
 
-        .gold-top { transform: rotateX(90deg) translateZ(14px); background: linear-gradient(135deg, #FDE047, rgba(212,175,55,0.4)); border-color: rgba(212,175,55,0.6); }
-        .gold-front { transform: translateZ(14px); background: linear-gradient(180deg, #D4AF37, rgba(161,98,7,0.4)); border-color: rgba(212,175,55,0.6); }
-        .gold-right { transform: rotateY(90deg) translateZ(14px); background: linear-gradient(180deg, #A16207, rgba(113,63,18,0.4)); border-color: rgba(212,175,55,0.6); }
+.block-local-rotation { position: absolute; top: 0; left: 0; transform-style: preserve-3d; }
 
-        /* --- 4. UNIFIED OS GLASS UI --- */
-        .dasos-glass {
-            background: rgba(4, 8, 16, 0.5); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-            border: 1px solid var(--glass-border); box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
+.block-interactive {
+    position: absolute; top: -20px; left: -20px; width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center; transform-style: preserve-3d;
+    cursor: pointer; pointer-events: auto; z-index: 50; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
 
-        .dasos-topbar { position: fixed; top: 24px; left: 24px; right: 280px; border-radius: 20px; padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; z-index: 70; }
-        .epoch-box { position: fixed; top: 24px; right: 24px; border-radius: 20px; padding: 10px 20px; display: flex; align-items: center; z-index: 70; }
+.block-interactive.hovered { z-index: 100; transform: scale(1.8) translateZ(10px); }
 
-        .dasos-dock { position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%); border-radius: 24px; padding: 10px 16px; display: flex; gap: 20px; z-index: 70; } 
-        
-        .dock-icon { width: 48px; height: 48px; border-radius: 12px; border: 1px solid rgba(0,240,255,0.1); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.7); transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; position: relative; background: rgba(0,0,0,0.2); }
-        .dock-icon svg { width: 24px; height: 24px; }
-        .dock-icon:hover { transform: scale(1.3) translateY(-10px); margin: 0 8px; border-color: var(--cyan); color: var(--cyan); background: rgba(0, 240, 255, 0.2); box-shadow: 0 10px 25px rgba(0,240,255,0.2); z-index: 80;}
-        .dock-icon.active { border-color: var(--cyan); color: var(--cyan); background: rgba(0,240,255,0.1); }
-        .dock-icon.active::after { content: ''; position: absolute; bottom: -8px; width: 20px; height: 3px; background: var(--cyan); border-radius: 2px; box-shadow: 0 0 10px var(--cyan); }
+.cube-3d { width: 28px; height: 28px; transform-style: preserve-3d; transform: rotateX(-90deg) rotateY(0deg) rotateZ(45deg); }
+.block-interactive.hovered .cube-3d { filter: drop-shadow(0 0 20px var(--cyan)); }
 
-        .dasos-window { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.95); width: 900px; height: 580px; border-radius: 16px; display: flex; flex-direction: column; z-index: 60; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); background: rgba(6, 11, 20, 0.85); }
-        .dasos-window.open { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
+.cube-face { position: absolute; width: 28px; height: 28px; border: 1px solid rgba(0,240,255,0.4); box-shadow: inset 0 0 12px rgba(0,0,0,0.8); }
 
-        .window-titlebar { height: 48px; border-bottom: 1px solid var(--glass-border); display: flex; align-items: center; padding: 0 20px; background: rgba(0,0,0,0.4); justify-content: space-between; border-radius: 16px 16px 0 0; }
-        .window-title { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--cyan); letter-spacing: 0.1em; text-transform: uppercase; font-weight: bold; }
-        .window-controls { display: flex; gap: 12px; }
-        .win-btn { width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: rgba(255,255,255,0.4); font-family: 'JetBrains Mono'; font-size: 12px; }
-        .win-btn:hover { color: var(--cyan); }
-        
-        .window-content { flex: 1; display: flex; overflow: hidden; border-radius: 0 0 16px 16px; }
-        .sidebar { width: 220px; background: rgba(0,0,0,0.3); border-right: 1px solid var(--glass-border); padding: 20px; display: flex; flex-direction: column; gap: 8px; }
-        .sidebar-item { padding: 10px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; transition: all 0.2s; color: #94A3B8; }
-        .sidebar-item:hover, .sidebar-item.active { background: rgba(0,240,255,0.1); color: #fff; box-shadow: inset 2px 0 0 var(--cyan); }
-        
-        .main-view { flex: 1; padding: 32px; overflow-y: auto; }
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
-        
-        .widget-panel-left { position: fixed; bottom: 0; left: 0; width: 100vw; height: 48px; display: flex; align-items: center; z-index: 45; pointer-events: none; }
-        .telemetry-bar { width: 100%; height: 100%; border-radius: 16px 16px 0 0; padding: 8px 32px; display: flex; align-items: center; pointer-events: auto; }
-        .scroll-hide::-webkit-scrollbar { display: none; }
-        
-        @keyframes beam-up { 0% { height: 0; opacity: 1; } 100% { height: 350px; opacity: 0; } }
-        .action-beam { position: absolute; bottom: 0; left: 50%; width: 4px; background: var(--cyan); transform: translateX(-50%); box-shadow: 0 0 20px var(--cyan); pointer-events: none; z-index: 60; }
+.cube-face::after {
+    content: ''; position: absolute; inset: 0; opacity: 0.7; pointer-events: none;
+    background-image: linear-gradient(rgba(0, 240, 255, 0.25) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 240, 255, 0.25) 1px, transparent 1px);
+    background-size: 4px 4px;
+}
 
-        .node-inspector-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(12px);
-            display: flex; align-items: center; justify-content: center; z-index: 9999;
-            opacity: 0; pointer-events: none; transition: opacity 0.3s;
-        }
-        .node-inspector-overlay.active { opacity: 1; pointer-events: auto; }
+.face-top { transform: rotateX(90deg) translateZ(14px); background: linear-gradient(135deg, rgba(0,240,255,0.8), rgba(0,240,255,0.2)); }
+.face-front { transform: translateZ(14px); background: linear-gradient(180deg, rgba(0,180,255,0.8), rgba(0,100,200,0.2)); }
+.face-right { transform: rotateY(90deg) translateZ(14px); background: linear-gradient(180deg, rgba(0,150,255,0.8), rgba(0,50,150,0.2)); }
+
+.gold-top { transform: rotateX(90deg) translateZ(14px); background: linear-gradient(135deg, #FDE047, rgba(212,175,55,0.4)); border-color: rgba(212,175,55,0.6); }
+.gold-front { transform: translateZ(14px); background: linear-gradient(180deg, #D4AF37, rgba(161,98,7,0.4)); border-color: rgba(212,175,55,0.6); }
+.gold-right { transform: rotateY(90deg) translateZ(14px); background: linear-gradient(180deg, #A16207, rgba(113,63,18,0.4)); border-color: rgba(212,175,55,0.6); }
+
+/* --- GLASS UI --- */
+.dasos-glass {
+    background: rgba(4, 8, 16, 0.5); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+    border: 1px solid var(--glass-border); box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+.dasos-topbar { position: fixed; top: 24px; left: 24px; right: 280px; border-radius: 20px; padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; z-index: 70; }
+.epoch-box { position: fixed; top: 24px; right: 24px; border-radius: 20px; padding: 10px 20px; display: flex; align-items: center; z-index: 70; }
+.dasos-dock { position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%); border-radius: 24px; padding: 10px 16px; display: flex; gap: 20px; z-index: 70; }
+.dock-icon { width: 48px; height: 48px; border-radius: 12px; border: 1px solid rgba(0,240,255,0.1); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.7); transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; position: relative; background: rgba(0,0,0,0.2); }
+.dock-icon svg { width: 24px; height: 24px; }
+.dock-icon:hover { transform: scale(1.3) translateY(-10px); margin: 0 8px; border-color: var(--cyan); color: var(--cyan); background: rgba(0, 240, 255, 0.2); box-shadow: 0 10px 25px rgba(0,240,255,0.2); z-index: 80;}
+.dock-icon.active { border-color: var(--cyan); color: var(--cyan); background: rgba(0,240,255,0.1); }
+.dock-icon.active::after { content: ''; position: absolute; bottom: -8px; width: 20px; height: 3px; background: var(--cyan); border-radius: 2px; box-shadow: 0 0 10px var(--cyan); }
+.dasos-window { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.95); width: 900px; height: 580px; border-radius: 16px; display: flex; flex-direction: column; z-index: 60; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); background: rgba(6, 11, 20, 0.85); }
+.dasos-window.open { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
+.window-titlebar { height: 48px; border-bottom: 1px solid var(--glass-border); display: flex; align-items: center; padding: 0 20px; background: rgba(0,0,0,0.4); justify-content: space-between; border-radius: 16px 16px 0 0; }
+.window-title { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--cyan); letter-spacing: 0.1em; text-transform: uppercase; font-weight: bold; }
+.window-controls { display: flex; gap: 12px; }
+.win-btn { width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: rgba(255,255,255,0.4); font-family: 'JetBrains Mono'; font-size: 12px; }
+.win-btn:hover { color: var(--cyan); }
+.window-content { flex: 1; display: flex; overflow: hidden; border-radius: 0 0 16px 16px; }
+.widget-panel-left { position: fixed; bottom: 0; left: 0; width: 100vw; height: 48px; display: flex; align-items: center; z-index: 45; pointer-events: none; }
+.telemetry-bar { width: 100%; height: 100%; border-radius: 16px 16px 0 0; padding: 8px 32px; display: flex; align-items: center; pointer-events: auto; }
+.scroll-hide::-webkit-scrollbar { display: none; }
+@keyframes beam-up { 0% { height: 0; opacity: 1; } 100% { height: 350px; opacity: 0; } }
+.action-beam { position: absolute; bottom: 0; left: 50%; width: 4px; background: var(--cyan); transform: translateX(-50%); box-shadow: 0 0 20px var(--cyan); pointer-events: none; z-index: 60; }
+.node-inspector-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+.node-inspector-overlay.active { opacity: 1; pointer-events: auto; }
